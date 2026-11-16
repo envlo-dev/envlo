@@ -23,10 +23,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Version comes from package.json "packageManager" (pnpm@10.34.9).
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -50,6 +49,37 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
+  runtime-smoke:
+    name: Runtime Smoke (@envlo/core)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.12"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build @envlo/core
+        run: pnpm --filter @envlo/core build
+
+      - name: Node smoke
+        run: node packages/core/scripts/runtime-smoke.mjs --expect node
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Bun smoke
+        run: bun packages/core/scripts/runtime-smoke.mjs --expect bun
+
   pnpm-audit:
     name: pnpm audit (high+)
     runs-on: ubuntu-latest
@@ -59,8 +89,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
