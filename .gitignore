@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+packages/*/tsconfig.tsbuildinfo
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+.turbo/
+.cache/
+.pnpm-store/
+package-lock.json
+yarn.lock

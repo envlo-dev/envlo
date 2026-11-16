@@ -1,0 +1,50 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    "group:monorepos",
+    "group:definitelyTyped"
+  ],
+  "timezone": "America/Los_Angeles",
+  "schedule": ["before 6am on Monday"],
+  "rangeStrategy": "bump",
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"]
+  },
+  "packageRules": [
+    {
+      "description": "Group weekly minor/patch dependency updates",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "deps minor/patch (weekly)",
+      "groupSlug": "deps-minor-patch-weekly",
+      "schedule": ["before 6am on Monday"],
+      "automerge": false
+    },
+    {
+      "description": "Group GitHub Actions minor/patch updates",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "github-actions minor/patch (weekly)",
+      "groupSlug": "gha-minor-patch-weekly",
+      "schedule": ["before 6am on Monday"]
+    },
+    {
+      "description": "Security updates get priority labels",
+      "matchManagers": ["npm"],
+      "matchDatasources": ["npm"],
+      "matchUpdateTypes": ["patch", "minor", "major"],
+      "matchPackageNames": ["*"],
+      "vulnerabilityAlert": true,
+      "labels": ["security", "dependencies"]
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on the first day of the month"]
+  },
+  "labels": ["dependencies"]
+}
