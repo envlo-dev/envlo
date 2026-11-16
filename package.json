@@ -13,7 +13,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "pnpm -r --if-present run typecheck",
-    "clean": "pnpm -r --if-present run clean"
+    "clean": "pnpm -r --if-present run clean",
+    "test:smoke": "pnpm --filter @envlo/core run test:smoke"
   },
   "engines": {
     "node": ">=22.12.0",
