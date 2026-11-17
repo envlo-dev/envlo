@@ -1,5 +1,6 @@
 import PostalMime from "postal-mime";
 import type { Header } from "postal-mime";
+import { htmlToSafeMarkdown } from "../firewall/html-to-markdown.js";
 import { unwrapForwarding } from "../forwarding/unwrap-forwarding.js";
 import { firstAddress, flattenAddresses } from "./addresses.js";
 import { normalizeAttachments } from "./attachments.js";
@@ -46,6 +47,11 @@ export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> 
     dmarc: authDetails.dmarc,
   };
 
+  const html = email.html ?? null;
+  const sanitized = html
+    ? htmlToSafeMarkdown(html)
+    : { markdown: "", strippedHiddenElementsCount: 0, timedOut: false, html: "" };
+
   const base: IngestedMime = {
     messageId: normalizeMessageId(email.messageId ?? headerMap.get("message-id")?.[0]),
     inReplyTo: normalizeMessageId(email.inReplyTo ?? headerMap.get("in-reply-to")?.[0]),
@@ -58,8 +64,11 @@ export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> 
     replyTo: flattenAddresses(email.replyTo),
     subject: email.subject ?? null,
     date: email.date ?? headerMap.get("date")?.[0] ?? null,
-    html: email.html ?? null,
+    html,
     text: email.text ?? null,
+    safeMarkdown: html ? sanitized.markdown : null,
+    strippedHiddenElementsCount: sanitized.strippedHiddenElementsCount,
+    sanitizeTimedOut: sanitized.timedOut,
     attachments: normalizeAttachments(email.attachments),
     senderAuthStatus: senderAuth.status,
     senderAuth,
