@@ -62,3 +62,24 @@ export {
 } from "./forwarding/index.js";
 
 export type { ForwardingDetection, ForwardingUnwrap } from "./forwarding/index.js";
+
+export {
+  sanitizeInvisibleHtml,
+  htmlToSafeMarkdown,
+  isInvisibleElement,
+  isDangerousTag,
+  isTrackingPixel,
+  parseInlineStyle,
+  normalizeCssColor,
+  stripZeroWidthChars,
+  TimeoutGuard,
+  SanitizeTimeoutError,
+  DEFAULT_SANITIZE_TIMEOUT_MS,
+  DEFAULT_MAX_INPUT_CHARS,
+} from "./firewall/index.js";
+
+export type {
+  SanitizeDomResult,
+  HtmlToMarkdownResult,
+  SanitizeOptions,
+} from "./firewall/index.js";

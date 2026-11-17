@@ -37,6 +37,16 @@
         "types": "./dist/forwarding/index.d.cts",
         "default": "./dist/forwarding/index.cjs"
       }
+    },
+    "./firewall": {
+      "import": {
+        "types": "./dist/firewall/index.d.ts",
+        "default": "./dist/firewall/index.js"
+      },
+      "require": {
+        "types": "./dist/firewall/index.d.cts",
+        "default": "./dist/firewall/index.cjs"
+      }
     }
   },
   "files": [
