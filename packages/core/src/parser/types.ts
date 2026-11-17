@@ -68,6 +68,16 @@ export type IngestedMime = {
   /** @deprecated Prefer `senderAuth.status` — kept as a shorthand. */
   senderAuthStatus: SenderAuthStatus;
   senderAuth: SenderAuth;
+  /**
+   * Original customer sender when the message was auto-forwarded into Envlo
+   * (Gmail / M365 Zero-MX). Equals `from` when no forwarding was detected.
+   */
+  trueOriginalSender: MimeAddress | null;
+  /**
+   * Best address for `reply_to_thread` — prefers `trueOriginalSender`, then
+   * outer `Reply-To`, then outer `From`.
+   */
+  replyToAddress: string | null;
   /** Lowercased header map for callers that need raw auth/threading lines. */
   headers: ReadonlyMap<string, string[]>;
 };

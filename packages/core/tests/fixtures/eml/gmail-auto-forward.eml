@@ -1,0 +1,34 @@
+Delivered-To: acme@envlo.dev
+Received: by mx.envlo.dev with SMTP id gmail-fwd-001;
+        Tue, 17 Nov 2026 10:00:00 -0800 (PST)
+X-Forwarded-To: acme@envlo.dev
+X-Forwarded-For: support@company.com
+Authentication-Results: mx.envlo.dev;
+       spf=pass smtp.mailfrom=company.com;
+       dkim=pass header.d=company.com;
+       dmarc=pass header.from=company.com
+MIME-Version: 1.0
+Date: Tue, 17 Nov 2026 10:00:00 -0800
+Message-ID: <gmail-autofwd-outer-001@company.com>
+Subject: Fwd: Need help with my order
+From: Company Support <support@company.com>
+To: Acme Inbox <acme@envlo.dev>
+Content-Type: multipart/alternative; boundary="000000000000fwdgmail"
+
+--000000000000fwdgmail
+Content-Type: text/plain; charset="UTF-8"
+
+---------- Forwarded message ---------
+From: Alice Customer <alice@customer.example>
+Date: Tue, 17 Nov 2026 at 9:45 AM
+Subject: Need help with my order
+To: Company Support <support@company.com>
+
+Hi support — my order #4421 never arrived. Can you help?
+
+--000000000000fwdgmail
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr"><br clear="all"><div><br></div><div>---------- Forwarded message ---------<br>From: <strong class="gmail_sendername" dir="auto">Alice Customer</strong> <span dir="auto">&lt;<a href="mailto:alice@customer.example">alice@customer.example</a>&gt;</span><br>Date: Tue, 17 Nov 2026 at 9:45 AM<br>Subject: Need help with my order<br>To: Company Support &lt;<a href="mailto:support@company.com">support@company.com</a>&gt;<br></div><br><div>Hi support — my order #4421 never arrived. Can you help?</div></div>
+
+--000000000000fwdgmail--

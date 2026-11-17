@@ -1,0 +1,19 @@
+From: Alice Customer <alice@customer.example>
+To: Company Support <support@company.com>
+Subject: Re: Billing question
+In-Reply-To: <prev-001@contoso.com>
+References: <prev-001@contoso.com>
+Message-ID: <reply-quoted-001@customer.example>
+Date: Tue, 17 Nov 2026 21:40:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+Thanks — that fixes it.
+
+________________________________
+From: Company Support <support@company.com>
+Sent: Tuesday, November 17, 2026 9:00 AM
+To: Alice Customer <alice@customer.example>
+Subject: Billing question
+
+Can you confirm the invoice amount?

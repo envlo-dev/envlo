@@ -4,6 +4,7 @@ export default defineConfig({
   entry: {
     index: "src/index.ts",
     "parser/index": "src/parser/index.ts",
+    "forwarding/index": "src/forwarding/index.ts",
   },
   format: ["esm", "cjs"],
   dts: {

@@ -1,0 +1,43 @@
+Received: from AM0PR10MB1111.EURPRD10.PROD.OUTLOOK.COM by mx.envlo.dev
+ with HTTPS; Tue, 17 Nov 2026 18:05:00 +0000
+X-Forwarded-To: acme@envlo.dev
+X-MS-Exchange-Organization-AutoForwarded: true
+Authentication-Results: spf=pass smtp.mailfrom=contoso.com;
+ dkim=pass header.d=contoso.com; dmarc=pass header.from=contoso.com
+From: Contoso Support <support@contoso.com>
+To: Acme Envlo <acme@envlo.dev>
+Subject: FW: Billing question
+Thread-Topic: Billing question
+Date: Tue, 17 Nov 2026 18:05:00 +0000
+Message-ID: <m365-autofwd-outer-001@contoso.com>
+Content-Language: en-US
+Content-Type: multipart/alternative; boundary="M365FwdBoundary01"
+MIME-Version: 1.0
+
+--M365FwdBoundary01
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+________________________________
+From: Bob Buyer <bob@buyer.example>
+Sent: Tuesday, November 17, 2026 9:50 AM
+To: Contoso Support <support@contoso.com>
+Subject: Billing question
+
+Hello — I was double-charged on invoice INV-99. Please refund.
+
+--M365FwdBoundary01
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html><body>
+<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in 0in 0in">
+<p><b>From:</b> Bob Buyer &lt;bob@buyer.example&gt;<br>
+<b>Sent:</b> Tuesday, November 17, 2026 9:50 AM<br>
+<b>To:</b> Contoso Support &lt;support@contoso.com&gt;<br>
+<b>Subject:</b> Billing question</p>
+</div>
+<p>Hello — I was double-charged on invoice INV-99. Please refund.</p>
+</body></html>
+
+--M365FwdBoundary01--

@@ -1,0 +1,13 @@
+Resent-From: Forward Desk <forwarder@company.com>
+Resent-To: acme@envlo.dev
+Resent-Date: Tue, 17 Nov 2026 19:00:00 +0000
+Resent-Message-ID: <resent-outer-001@company.com>
+From: Dana Original <dana@customers.example>
+To: Support <support@company.com>
+Subject: Resent path keeps original From
+Message-ID: <resent-original-001@customers.example>
+Date: Tue, 17 Nov 2026 18:50:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+Original body from Dana.

@@ -1,0 +1,11 @@
+X-Forwarded-To: acme@envlo.dev
+X-Original-From: Original Customer <original@customer.example>
+From: Company Support <support@company.com>
+To: acme@envlo.dev
+Subject: Header-only original sender
+Message-ID: <x-original-from-001@company.com>
+Date: Tue, 17 Nov 2026 22:20:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+No inline forwarded block — only X-Original-From identifies the customer.
