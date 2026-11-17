@@ -1,0 +1,30 @@
+Delivered-To: agent@envlo.dev
+Received: by 2002:a17:90a:f48e:0:0:0:0 with SMTP id x1csp123456abc;
+        Mon, 16 Nov 2026 09:00:00 -0800 (PST)
+Received-SPF: pass (google.com: domain of customer@example.com designates 203.0.113.10 as permitted sender) client-ip=203.0.113.10;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@example.com header.s=google header.b=abcdef01;
+       spf=pass (google.com: domain of customer@example.com designates 203.0.113.10 as permitted sender) smtp.mailfrom=customer@example.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=example.com
+MIME-Version: 1.0
+Date: Mon, 16 Nov 2026 09:00:00 -0800
+Message-ID: <gmail-reply-002@mail.gmail.com>
+In-Reply-To: <gmail-root-001@mail.gmail.com>
+References: <gmail-root-001@mail.gmail.com> <gmail-mid-001b@mail.gmail.com>
+Subject: Re: Invoice question
+From: Customer Name <customer@example.com>
+To: Envlo Agent <agent@envlo.dev>
+Reply-To: Customer Name <customer@example.com>
+Content-Type: multipart/alternative; boundary="000000000000gmail01"
+
+--000000000000gmail01
+Content-Type: text/plain; charset="UTF-8"
+
+Thanks — please send the updated invoice.
+
+--000000000000gmail01
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr">Thanks — please send the updated invoice.</div>
+
+--000000000000gmail01--

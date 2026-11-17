@@ -1,0 +1,8 @@
+From: solo@example.com
+To: agent@envlo.dev
+Message-ID: <text-only-001@example.com>
+Date: Tue, 17 Nov 2026 14:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+Plain text only, no subject header, no html part.

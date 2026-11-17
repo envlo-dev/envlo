@@ -1,0 +1,29 @@
+Delivered-To: signup@envlo.dev
+Received: from fox.resend.com (fox.resend.com [216.198.79.1])
+ by mx.envlo.dev with ESMTPS id resend001;
+ Mon, 16 Nov 2026 19:15:00 +0000
+Received-SPF: pass (mx.envlo.dev: domain of bounce.resend.com designates 216.198.79.1 as permitted sender) client-ip=216.198.79.1;
+Authentication-Results: mx.envlo.dev;
+       dkim=pass header.d=resend.com header.s=resend header.b=YmFzZTY0;
+       spf=pass smtp.mailfrom=bounce@bounce.resend.com;
+       dmarc=pass header.from=updates.acme.app
+From: Acme Auth <noreply@updates.acme.app>
+To: New User <user@example.com>
+Reply-To: support@acme.app
+Subject: Verify your email
+Message-ID: <resend-tx-001@resend.dev>
+Date: Mon, 16 Nov 2026 19:15:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="ResendBoundary01"
+
+--ResendBoundary01
+Content-Type: text/plain; charset="utf-8"
+
+Your verification code is 482913.
+
+--ResendBoundary01
+Content-Type: text/html; charset="utf-8"
+
+<html><body><p>Your verification code is <b>482913</b>.</p></body></html>
+
+--ResendBoundary01--

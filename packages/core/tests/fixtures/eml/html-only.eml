@@ -1,0 +1,9 @@
+From: html@example.com
+To: agent@envlo.dev
+Subject: HTML only
+Message-ID: <html-only-001@example.com>
+Date: Tue, 17 Nov 2026 14:10:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset="utf-8"
+
+<html><body><p>HTML body without a text/plain alternative.</p></body></html>

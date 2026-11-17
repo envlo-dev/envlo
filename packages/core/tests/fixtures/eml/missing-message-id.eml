@@ -1,0 +1,8 @@
+From: mystery@example.org
+To: agent@envlo.dev
+Subject: No Message-ID
+Date: Tue, 17 Nov 2026 14:20:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+This message intentionally omits Message-ID.

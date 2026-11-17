@@ -1,0 +1,43 @@
+Authentication-Results: mx.envlo.dev;
+       spf=pass smtp.mailfrom=docs@example.com;
+       dkim=pass header.d=example.com;
+       dmarc=pass header.from=example.com
+From: Docs Bot <docs@example.com>
+To: agent@envlo.dev
+Subject: Report with logo and PDF
+Message-ID: <inline-attach-001@example.com>
+Date: Tue, 17 Nov 2026 12:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="RelatedBoundary01"
+
+--RelatedBoundary01
+Content-Type: multipart/alternative; boundary="AltBoundary01"
+
+--AltBoundary01
+Content-Type: text/plain; charset="utf-8"
+
+See attached report. Logo below in HTML.
+
+--AltBoundary01
+Content-Type: text/html; charset="utf-8"
+
+<html><body><p>See attached report.</p><img src="cid:logo@example.com" alt="logo" /></body></html>
+
+--AltBoundary01--
+
+--RelatedBoundary01
+Content-Type: image/png; name="logo.png"
+Content-Transfer-Encoding: base64
+Content-ID: <logo@example.com>
+Content-Disposition: inline; filename="logo.png"
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==
+
+--RelatedBoundary01
+Content-Type: application/pdf; name="report.pdf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="report.pdf"
+
+JVBERi0xLjQKJeLjz9MKCg==
+
+--RelatedBoundary01--

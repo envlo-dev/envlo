@@ -1,0 +1,50 @@
+Received: from AM0PR10MB0000.EURPRD10.PROD.OUTLOOK.COM by
+ AM0PR10MB0001.EURPRD10.PROD.OUTLOOK.COM with HTTPS; Mon, 16 Nov 2026 17:05:00
+ +0000
+Received-SPF: Pass (protection.outlook.com: domain of billing@contoso.com
+ designates 40.92.0.1 as permitted sender) receiver=protection.outlook.com;
+ client-ip=40.92.0.1; helo=mail.contoso.com;
+Authentication-Results: spf=pass (sender IP is 40.92.0.1)
+ smtp.mailfrom=contoso.com; dkim=pass (signature was verified)
+ header.d=contoso.com;dmarc=pass action=none
+ header.from=contoso.com;compauth=pass reason=100
+From: Contoso Billing <billing@contoso.com>
+To: "Ops Agent" <ops@envlo.dev>
+Subject: Re: Purchase order PO-2048
+Thread-Topic: Purchase order PO-2048
+Thread-Index: AdxM365ThreadIndex001
+Date: Mon, 16 Nov 2026 17:05:00 +0000
+Message-ID: <m365-reply-002@contoso.com>
+References: <m365-root-001@contoso.com>
+In-Reply-To: <m365-root-001@contoso.com>
+Accept-Language: en-US
+Content-Language: en-US
+Content-Type: multipart/mixed; boundary="M365Boundary01"
+MIME-Version: 1.0
+
+--M365Boundary01
+Content-Type: multipart/alternative; boundary="M365Alt01"
+
+--M365Alt01
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Approved. Please proceed with fulfillment.
+
+--M365Alt01
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html><body><p>Approved. Please proceed with fulfillment.</p></body></html>
+
+--M365Alt01--
+
+--M365Boundary01
+Content-Type: application/pdf; name="po-2048.pdf"
+Content-Description: po-2048.pdf
+Content-Disposition: attachment; filename="po-2048.pdf"; size=20
+Content-Transfer-Encoding: base64
+
+JVBERi0xLjQKJeLjz9MKCg==
+
+--M365Boundary01--

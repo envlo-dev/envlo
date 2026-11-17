@@ -28,3 +28,23 @@ export function detectRuntime(): EnvloRuntime {
 export function createCoreBanner(): string {
   return `@envlo/core@${ENVLO_CORE_VERSION} (${detectRuntime()})`;
 }
+
+export {
+  ingestRawMime,
+  evaluateSenderAuth,
+  evaluateSenderAuthStatus,
+  parseReferencesHeader,
+  normalizeMessageId,
+} from "./parser/index.js";
+
+export type {
+  RawMimeInput,
+  SenderAuthStatus,
+  AuthMethodOutcome,
+  MimeAddress,
+  IngestedAttachment,
+  IngestedMime,
+  SenderAuth,
+  AuthMethodResult,
+  SenderAuthDetails,
+} from "./parser/index.js";

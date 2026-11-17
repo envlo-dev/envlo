@@ -99,6 +99,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
+      # Ignores listed in package.json pnpm.auditConfig.ignoreGhsas (unpatched upstream only).
       - name: pnpm audit (high+)
         run: pnpm audit --audit-level high
 

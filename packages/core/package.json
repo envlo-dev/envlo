@@ -17,6 +17,16 @@
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
       }
+    },
+    "./parser": {
+      "import": {
+        "types": "./dist/parser/index.d.ts",
+        "default": "./dist/parser/index.js"
+      },
+      "require": {
+        "types": "./dist/parser/index.d.cts",
+        "default": "./dist/parser/index.cjs"
+      }
     }
   },
   "files": [

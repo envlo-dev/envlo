@@ -1,0 +1,44 @@
+Received: from AM7PR04MB1234.eurprd04.prod.outlook.com (2603:10a6:20b:1::20)
+ by AM7PR04MB5678.eurprd04.prod.outlook.com with HTTPS;
+ Tue, 17 Nov 2026 16:20:00 +0000
+Received-SPF: Pass (protection.outlook.com: domain of pedidos@contoso.es
+ designates 40.92.60.10 as permitted sender)
+Authentication-Results: spf=pass (sender IP is 40.92.60.10)
+ smtp.mailfrom=contoso.es; dkim=pass (signature was verified)
+ header.d=contoso.es; dmarc=pass action=none header.from=contoso.es;
+From: =?utf-8?Q?Equipo_de_Pedidos?= <pedidos@contoso.es>
+To: "Agente Envlo" <agent@envlo.dev>
+Cc: "Ana Garc=C3=ADa" <ana.garcia@contoso.es>
+Subject: =?utf-8?Q?Re:_Pedido_n=C3=BAmero_PO-7788?=
+Thread-Topic: =?utf-8?Q?Pedido_n=C3=BAmero_PO-7788?=
+Thread-Index: AdxM365DenseTable001==
+Date: Tue, 17 Nov 2026 16:20:00 +0000
+Message-ID: <m365-dense-002@contoso.es>
+References: <m365-dense-001@contoso.es>
+In-Reply-To: <m365-dense-001@contoso.es>
+Content-Language: es-ES
+Content-Type: multipart/alternative; boundary="M365Dense01"
+MIME-Version: 1.0
+
+--M365Dense01
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hola,
+El pedido n=C3=BAmero PO-7788 est=C3=A1 aprobado.
+Gracias.
+
+--M365Dense01
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html><body>
+<table role="presentation" width="100%">
+  <tr><td><p>Hola,</p></td></tr>
+  <tr><td><p>El pedido n=C3=BAmero <b>PO-7788</b> est=C3=A1 aprobado.</p></td></=
+tr>
+  <tr><td><p>Gracias.</p></td></tr>
+</table>
+</body></html>
+
+--M365Dense01--

@@ -1,0 +1,40 @@
+Delivered-To: agent@envlo.dev
+Received: by 2002:a05:6400:1a2:b0:123:456:789 with SMTP id abc123csp999;
+        Tue, 17 Nov 2026 08:01:02 -0800 (PST)
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id dense-gmail-001
+        for <agent@envlo.dev>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2026 08:01:01 -0800 (PST)
+Received-SPF: pass (google.com: domain of taro.yamada@example.co.jp designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@example.co.jp header.s=20230601 header.b=AbCdEfGh;
+       spf=pass (google.com: domain of taro.yamada@example.co.jp designates 209.85.220.41 as permitted sender) smtp.mailfrom=taro.yamada@example.co.jp;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=example.co.jp
+MIME-Version: 1.0
+Date: Tue, 17 Nov 2026 08:01:00 -0800
+Message-ID: <gmail-dense-003@mail.gmail.com>
+In-Reply-To: <gmail-dense-002@mail.gmail.com>
+References: <gmail-dense-001@mail.gmail.com>
+ <gmail-dense-002@mail.gmail.com>
+Subject: =?UTF-8?B?UmU6IOODhOOCpOODvOODieOBk+OCjOOBhuOBhA==?=
+From: =?UTF-8?B?5bGx55SwIOWkqumDpg==?= <taro.yamada@example.co.jp>
+To: Envlo Agent <agent@envlo.dev>, Ops Alias <ops@envlo.dev>
+Cc: Finance Desk <finance@example.co.jp>
+Sender: Mailing List <list@example.co.jp>
+Reply-To: Taro Yamada <taro.yamada@example.co.jp>
+Content-Type: multipart/alternative; boundary="000000000000dense01"
+
+--000000000000dense01
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+44GT44KT44Gr44GZ44GE44CC6KqN5rGC5pu05paw44KS6YCB44GR44G+44GZ44CC
+
+--000000000000dense01
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+PGRpdiBkaXI9Imx0ciI+44GT44KT44Gr44GZ44GE44CC6KqN5rGC5pu05paw44KS6YCB44GR44G+44GZ44CCPC9kaXY+
+
+--000000000000dense01--

@@ -1,0 +1,13 @@
+Received-SPF: softfail (mx.envlo.dev: transitioning domain of maybe@example.net does not designate 198.51.100.20 as permitted sender)
+Authentication-Results: mx.envlo.dev;
+       spf=softfail smtp.mailfrom=maybe@example.net;
+       dkim=neutral header.d=example.net
+From: Maybe Sender <maybe@example.net>
+To: agent@envlo.dev
+Subject: Softfail only
+Message-ID: <auth-softfail-001@example.net>
+Date: Tue, 17 Nov 2026 13:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+Partial auth signals should stay unverified.

@@ -1,0 +1,32 @@
+Return-Path: <bounce+ses@amazonses.com>
+Received: from a8-31.smtp-out.amazonses.com (a8-31.smtp-out.amazonses.com [54.240.8.31])
+ by inbound-smtp.us-east-1.amazonaws.com with SMTP id ses-inbound-001
+ for agent@sandbox.envlo.dev;
+ Mon, 16 Nov 2026 18:10:00 +0000 (UTC)
+Received-SPF: pass (spfCheck: domain of notify.stripe.com designates 54.240.8.31 as permitted sender) client-ip=54.240.8.31;
+Authentication-Results: amazonses.com;
+ spf=pass (spfCheck: domain of notify.stripe.com designates 54.240.8.31 as permitted sender) smtp.mailfrom=bounce+ses@amazonses.com;
+ dkim=pass header.i=@amazonses.com header.s=6gbrjpgwjskckoidfbm3dops5z6scrkr;
+ dkim=pass header.i=@stripe.com header.s=s1;
+ dmarc=pass header.from=stripe.com
+From: Stripe <invoice@stripe.com>
+To: agent@sandbox.envlo.dev
+Subject: Your receipt from Acme, Inc. #1234
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="SESBoundary01"
+Message-ID: <ses-inbound-001@email.amazonses.com>
+Date: Mon, 16 Nov 2026 18:10:00 +0000
+
+--SESBoundary01
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Thanks for your payment of $42.00.
+
+--SESBoundary01
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+<html><body><p>Thanks for your payment of <strong>$42.00</strong>.</p></body></html>
+
+--SESBoundary01--
