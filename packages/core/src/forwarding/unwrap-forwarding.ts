@@ -31,7 +31,8 @@ function pickReplyToAddress(
 
 function subjectLooksForwarded(subject: string | null): boolean {
   if (!subject) return false;
-  return /^(fwd?|fw|vl|tr|enc|wg)\s*:/i.test(subject.trim());
+  // EN/FR/ES/DE/NL common forward prefixes (Fwd/FW/TR/RV/WG/VL/ENC).
+  return /^(fwd?|fw|vl|tr|rv|enc|wg)\s*:/i.test(subject.trim());
 }
 
 function looksLikeReply(mail: IngestedMime): boolean {
@@ -87,11 +88,12 @@ function inferForwarderAddress(mail: IngestedMime, outerFrom: MimeAddress | null
  *
  * Detection order:
  * 1. Nested `message/rfc822` attachment
- * 2. Gmail / Yahoo inline forwarded block
- * 3. Apple Mail “Begin forwarded message”
- * 4. Microsoft 365 / Outlook From/Sent/To block (guarded against reply quotes)
- * 5. `X-Original-From`
- * 6. `Resent-From` present → outer `From` is the original (Resent-* = resender)
+ * 2. Apple Mail “Begin forwarded message”
+ * 3. Gmail inline forwarded block (innermost hop when nested)
+ * 4. Yahoo inline forwarded block
+ * 5. Microsoft 365 / Outlook From/Sent/To block (guarded against reply quotes)
+ * 6. `X-Original-From`
+ * 7. `Resent-From` present → outer `From` is the original (Resent-* = resender)
  *
  * Note: `X-Forwarded-For` is parsed for forwarder hints only — on Gmail it is
  * usually the company mailbox that was forwarded, not the customer.
@@ -121,13 +123,23 @@ export async function unwrapForwarding(mail: IngestedMime): Promise<ForwardingUn
     };
   }
 
-  const gmailSender = parseGmailInlineForward(body) ?? parseYahooInlineForward(body);
+  const gmailSender = parseGmailInlineForward(body);
   if (gmailSender) {
     return {
       trueOriginalSender: gmailSender,
       replyToAddress: pickReplyToAddress(gmailSender, mail),
       forwarderAddress: inferForwarderAddress(mail, outerFrom),
       detection: "gmail-inline",
+    };
+  }
+
+  const yahooSender = parseYahooInlineForward(body);
+  if (yahooSender) {
+    return {
+      trueOriginalSender: yahooSender,
+      replyToAddress: pickReplyToAddress(yahooSender, mail),
+      forwarderAddress: inferForwarderAddress(mail, outerFrom),
+      detection: "yahoo-inline",
     };
   }
 

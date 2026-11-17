@@ -4,6 +4,7 @@ import type { MimeAddress } from "../parser/types.js";
 export type ForwardingDetection =
   | "rfc822-attachment"
   | "gmail-inline"
+  | "yahoo-inline"
   | "m365-inline"
   | "apple-inline"
   | "resent"

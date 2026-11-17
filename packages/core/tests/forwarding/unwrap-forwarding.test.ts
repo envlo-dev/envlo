@@ -136,6 +136,90 @@ describe("unwrapForwarding / auto-forward unwrapper", () => {
     expect(unwrapped.detection).toBe("none");
   });
 
+  it("unwraps Yahoo Forwarded Message blocks", async () => {
+    const mail = await ingestRawMime(loadFixture("yahoo-forward.eml"));
+
+    expect(mail.trueOriginalSender).toEqual({
+      name: "Yuki Customer",
+      address: "yuki@yahoo.example",
+    });
+    expect(mail.replyToAddress).toBe("yuki@yahoo.example");
+
+    const unwrapped = await unwrapForwarding(mail);
+    expect(unwrapped.detection).toBe("yahoo-inline");
+  });
+
+  it("unwraps localized Spanish M365 forward labels (Enviado/Para/Asunto)", async () => {
+    const mail = await ingestRawMime(loadFixture("m365-spanish-forward.eml"));
+
+    expect(mail.from?.address).toBe("support@contoso.es");
+    expect(mail.trueOriginalSender).toEqual({
+      name: "Diego Cliente",
+      address: "diego@cliente.example",
+    });
+    expect(mail.replyToAddress).toBe("diego@cliente.example");
+
+    const unwrapped = await unwrapForwarding(mail);
+    expect(unwrapped.detection).toBe("m365-inline");
+  });
+
+  it("unwraps localized German M365 forward labels (Gesendet/An/Betreff)", async () => {
+    const mail = await ingestRawMime(loadFixture("m365-german-forward.eml"));
+
+    expect(mail.from?.address).toBe("support@contoso.de");
+    expect(mail.trueOriginalSender).toEqual({
+      name: "Greta Kunde",
+      address: "greta@kunde.example",
+    });
+    expect(mail.replyToAddress).toBe("greta@kunde.example");
+
+    const unwrapped = await unwrapForwarding(mail);
+    expect(unwrapped.detection).toBe("m365-inline");
+  });
+
+  it("unwraps multi-hop Gmail forwards to the innermost original sender", async () => {
+    const mail = await ingestRawMime(loadFixture("gmail-multi-hop-forward.eml"));
+
+    expect(mail.from?.address).toBe("support@company.com");
+    expect(mail.trueOriginalSender).toEqual({
+      name: "Nest Customer",
+      address: "nest@customer.example",
+    });
+    expect(mail.replyToAddress).toBe("nest@customer.example");
+
+    const unwrapped = await unwrapForwarding(mail);
+    expect(unwrapped.detection).toBe("gmail-inline");
+    expect(unwrapped.trueOriginalSender?.address).not.toBe("partner@relay.example");
+  });
+
+  it("unwraps X-Original-From when no inline forward block is present", async () => {
+    const mail = await ingestRawMime(loadFixture("x-original-from-only.eml"));
+
+    expect(mail.from?.address).toBe("support@company.com");
+    expect(mail.trueOriginalSender).toEqual({
+      name: "Original Customer",
+      address: "original@customer.example",
+    });
+    expect(mail.replyToAddress).toBe("original@customer.example");
+
+    const unwrapped = await unwrapForwarding(mail);
+    expect(unwrapped.detection).toBe("x-original-from");
+  });
+
+  it("does not mis-detect HTML-only replies with quoted Outlook headers", async () => {
+    const mail = await ingestRawMime(loadFixture("reply-html-only-m365-headers.eml"));
+
+    expect(mail.text).toBeNull();
+    expect(mail.html).toBeTruthy();
+    expect(mail.from?.address).toBe("alice@customer.example");
+    expect(mail.subject).toMatch(/^Re:/i);
+    expect(mail.trueOriginalSender?.address).toBe("alice@customer.example");
+    expect(mail.replyToAddress).toBe("alice@customer.example");
+
+    const unwrapped = await unwrapForwarding(mail);
+    expect(unwrapped.detection).toBe("none");
+  });
+
   it("falls back to outer From when the message is not forwarded", async () => {
     const mail = await ingestRawMime(loadFixture("ses-inbound.eml"));
 

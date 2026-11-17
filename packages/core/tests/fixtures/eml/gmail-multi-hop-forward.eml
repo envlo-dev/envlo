@@ -1,0 +1,25 @@
+X-Forwarded-To: acme@envlo.dev
+X-Forwarded-For: support@company.com
+From: Company Support <support@company.com>
+To: Acme Inbox <acme@envlo.dev>
+Subject: Fwd: Fwd: Nested customer request
+Message-ID: <gmail-multihop-001@company.com>
+Date: Tue, 17 Nov 2026 22:15:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+---------- Forwarded message ---------
+From: Partner Desk <partner@relay.example>
+Date: Tue, 17 Nov 2026 at 10:00 AM
+Subject: Fwd: Nested customer request
+To: Company Support <support@company.com>
+
+Passing this along from the partner queue.
+
+---------- Forwarded message ---------
+From: Nest Customer <nest@customer.example>
+Date: Tue, 17 Nov 2026 at 9:30 AM
+Subject: Nested customer request
+To: Partner Desk <partner@relay.example>
+
+Please help with my multi-hop order.

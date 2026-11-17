@@ -13,8 +13,9 @@ const M365_BLOCK_RE = new RegExp(
   "i",
 );
 
+// Allow blank lines between fields — common after HTML→text conversion.
 const GMAIL_BLOCK_RE =
-  /(?:^|\n)-{2,}\s*Forwarded message\s*-{2,}\r?\nFrom:\s*(.+)\r?\nDate:\s*(.+)\r?\nSubject:\s*(.+)\r?\nTo:\s*(.+)/i;
+  /(?:^|\n)-{2,}\s*Forwarded message\s*-{2,}\s*\r?\nFrom:\s*(.+)\r?\n(?:\r?\n)?Date:\s*(.+)\r?\n(?:\r?\n)?Subject:\s*(.+)\r?\n(?:\r?\n)?To:\s*(.+)/i;
 
 // Apple inserts a blank line after the banner.
 const APPLE_BLOCK_RE =
@@ -49,13 +50,20 @@ export function hasGmailForwardMarker(body: string): boolean {
 }
 
 export function parseGmailInlineForward(body: string): MimeAddress | null {
-  const gmail = GMAIL_BLOCK_RE.exec(body);
-  if (gmail?.[1]) return parseAddressString(gmail[1]);
+  // Prefer the innermost hop when multiple Gmail blocks are nested.
+  const blocks = [...body.matchAll(new RegExp(GMAIL_BLOCK_RE.source, "gi"))];
+  const lastBlock = blocks[blocks.length - 1];
+  if (lastBlock?.[1]) return parseAddressString(lastBlock[1]);
 
-  // Unicode dash variants, but still require a dashed separator (not Apple).
-  const loose = /-{2,}\s*Forwarded message\s*-{2,}[\s\S]{0,80}?\nFrom:\s*(.+)\r?\n/i.exec(body);
-  if (loose?.[1] && hasGmailForwardMarker(body)) {
-    return parseAddressString(loose[1]);
+  // Unicode dash variants: still require Gmail's From → Date layout (not Yahoo From → To).
+  const looseAll = [
+    ...body.matchAll(
+      /-{2,}\s*Forwarded message\s*-{2,}[\s\S]{0,120}?\nFrom:\s*(.+)\r?\n(?:\r?\n)?Date:/gi,
+    ),
+  ];
+  const lastLoose = looseAll[looseAll.length - 1];
+  if (lastLoose?.[1] && hasGmailForwardMarker(body)) {
+    return parseAddressString(lastLoose[1].replace(/\s+/g, " ").trim());
   }
 
   return null;
