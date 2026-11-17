@@ -197,6 +197,9 @@ describe("ingestRawMime", () => {
     expect(ingested.subject).toBeNull();
     expect(ingested.text).toContain("Plain text only");
     expect(ingested.html).toBeNull();
+    expect(ingested.safeMarkdown).toBeNull();
+    expect(ingested.strippedHiddenElementsCount).toBe(0);
+    expect(ingested.sanitizeTimedOut).toBe(false);
     expect(ingested.messageId).toBe("<text-only-001@example.com>");
   });
 
@@ -204,6 +207,19 @@ describe("ingestRawMime", () => {
     const ingested = await ingestRawMime(loadFixture("html-only.eml"));
     expect(ingested.html).toContain("HTML body without a text/plain");
     expect(ingested.text).toBeNull();
+    expect(ingested.safeMarkdown).toContain("HTML body without a text/plain");
+    expect(ingested.sanitizeTimedOut).toBe(false);
+  });
+
+  it("populates safeMarkdown without invisible prompt-injection HTML", async () => {
+    const ingested = await ingestRawMime(loadFixture("html-hidden-injection.eml"));
+
+    expect(ingested.html).toContain("SYSTEM");
+    expect(ingested.safeMarkdown).toContain("Can you check my invoice?");
+    expect(ingested.safeMarkdown).not.toContain("SYSTEM");
+    expect(ingested.safeMarkdown).not.toContain("jailbreak");
+    expect(ingested.strippedHiddenElementsCount).toBeGreaterThanOrEqual(2);
+    expect(ingested.sanitizeTimedOut).toBe(false);
   });
 
   it("returns null messageId when header is absent", async () => {

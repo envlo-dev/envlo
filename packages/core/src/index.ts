@@ -65,12 +65,16 @@ export type { ForwardingDetection, ForwardingUnwrap } from "./forwarding/index.j
 
 export {
   sanitizeInvisibleHtml,
+  sanitizeInvisibleHtmlAsync,
   htmlToSafeMarkdown,
+  htmlToSafeMarkdownAsync,
   isInvisibleElement,
   isDangerousTag,
   isTrackingPixel,
   parseInlineStyle,
   normalizeCssColor,
+  parseStylesheetRules,
+  resolveElementStyles,
   stripZeroWidthChars,
   TimeoutGuard,
   SanitizeTimeoutError,

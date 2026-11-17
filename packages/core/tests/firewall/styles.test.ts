@@ -16,6 +16,12 @@ describe("style helpers", () => {
     expect(styles.get("font-size")).toBe("0px");
   });
 
+  it("strips trailing !important from style values", () => {
+    const styles = parseInlineStyle("display: none !important; opacity: 0 !important");
+    expect(styles.get("display")).toBe("none");
+    expect(styles.get("opacity")).toBe("0");
+  });
+
   it("detects zero opacity and off-screen offsets", () => {
     expect(isZeroOpacity("0")).toBe(true);
     expect(isZeroOpacity("0.0")).toBe(true);

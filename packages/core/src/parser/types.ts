@@ -64,6 +64,15 @@ export type IngestedMime = {
   date: string | null;
   html: string | null;
   text: string | null;
+  /**
+   * Agent-safe Markdown from sanitized HTML (invisible prompt-injection removed).
+   * Null when there is no HTML part. Prefer this over raw `html` for LLM context.
+   */
+  safeMarkdown: string | null;
+  /** Elements removed by the DOM sanitizer while building `safeMarkdown`. */
+  strippedHiddenElementsCount: number;
+  /** True when HTML sanitize hit the timeout/size guard (Markdown will be empty). */
+  sanitizeTimedOut: boolean;
   attachments: IngestedAttachment[];
   /** @deprecated Prefer `senderAuth.status` — kept as a shorthand. */
   senderAuthStatus: SenderAuthStatus;

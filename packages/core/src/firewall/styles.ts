@@ -16,7 +16,13 @@ export function parseInlineStyle(styleAttr: string | null | undefined): StyleMap
     const idx = part.indexOf(":");
     if (idx <= 0) continue;
     const prop = part.slice(0, idx).trim().toLowerCase();
-    const value = part.slice(idx + 1).trim().toLowerCase();
+    // Drop trailing !important so `display: none !important` still matches.
+    const value = part
+      .slice(idx + 1)
+      .trim()
+      .toLowerCase()
+      .replace(/\s*!important\s*$/i, "")
+      .trim();
     if (!prop || !value) continue;
     map.set(prop, value);
   }

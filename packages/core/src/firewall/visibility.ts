@@ -3,7 +3,6 @@ import {
   isZeroOpacity,
   normalizeCssColor,
   parseCssLengthPx,
-  parseInlineStyle,
   styleGet,
   type StyleMap,
 } from "./styles.js";
@@ -20,11 +19,19 @@ const DANGEROUS_TAGS = new Set([
   "meta",
 ]);
 
+export type VisibilityCheckOptions = {
+  /**
+   * When true, do not strip nodes that are only hidden via display/visibility/`hidden`
+   * (common for collapsed email quote UI). Harder injection tricks still strip.
+   */
+  preserveCollapsedQuotes?: boolean;
+};
+
 export function isDangerousTag(tagName: string): boolean {
   return DANGEROUS_TAGS.has(tagName.toLowerCase());
 }
 
-/** 1×1 (or 0×0) tracking pixels via attributes or inline style. */
+/** 1×1 (or 0×0) tracking pixels via attributes or inline/computed style. */
 export function isTrackingPixel(el: {
   tagName: string;
   getAttribute: (name: string) => string | null;
@@ -44,32 +51,24 @@ export function isTrackingPixel(el: {
   return width <= 1 && height <= 1;
 }
 
-export function isInvisibleElement(el: {
-  tagName: string;
-  getAttribute: (name: string) => string | null;
-}): boolean {
-  const styleMap = parseInlineStyle(el.getAttribute("style"));
-
-  if (isDangerousTag(el.tagName)) return true;
-  if (isTrackingPixel({ ...el, styleMap })) return true;
-
+function isCollapsedUiOnly(styleMap: StyleMap, el: { getAttribute: (n: string) => string | null }): boolean {
   const display = styleGet(styleMap, "display");
-  if (display === "none") return true;
-
   const visibility = styleGet(styleMap, "visibility");
-  if (visibility === "hidden" || visibility === "collapse") return true;
+  const hiddenAttr = el.getAttribute("hidden") !== null;
+  return display === "none" || visibility === "hidden" || visibility === "collapse" || hiddenAttr;
+}
 
+function hasHardInjectionHide(styleMap: StyleMap): boolean {
   if (isZeroOpacity(styleGet(styleMap, "opacity"))) return true;
 
   const fontSize = styleGet(styleMap, "font-size");
-  const fontPx = parseCssLengthPx(fontSize);
-  if (fontPx === 0) return true;
-  // Also catch unitless / bare "0" already handled; "0em"/"0rem" via parseCssLengthPx.
+  if (fontSize) {
+    const trimmed = fontSize.trim().toLowerCase();
+    if (trimmed === "0%" || parseCssLengthPx(fontSize) === 0) return true;
+  }
 
   const color = normalizeCssColor(styleGet(styleMap, "color"));
-  const background = normalizeCssColor(
-    styleGet(styleMap, "background-color", "background"),
-  );
+  const background = normalizeCssColor(styleGet(styleMap, "background-color", "background"));
   if (color && background && color === background) return true;
 
   if (
@@ -82,8 +81,49 @@ export function isInvisibleElement(el: {
     return true;
   }
 
-  // HTML hidden attribute is effectively invisible.
-  if (el.getAttribute("hidden") !== null) return true;
+  // Outlook / email clip tricks.
+  const msoHide = styleGet(styleMap, "mso-hide");
+  if (msoHide === "all") return true;
+
+  const clip = styleGet(styleMap, "clip");
+  if (clip && /rect\s*\(\s*0\s*(px)?\s*,\s*0\s*(px)?\s*,\s*0\s*(px)?\s*,\s*0\s*(px)?\s*\)/i.test(clip)) {
+    return true;
+  }
+  const clipPath = styleGet(styleMap, "clip-path");
+  if (clipPath && (clipPath.includes("inset(100%") || clipPath === "circle(0)" || clipPath.includes("circle(0px"))) {
+    return true;
+  }
+
+  // Collapsed box often used to hide preheader / injection in email HTML.
+  const maxHeight = parseCssLengthPx(styleGet(styleMap, "max-height"));
+  const height = parseCssLengthPx(styleGet(styleMap, "height"));
+  const overflow = styleGet(styleMap, "overflow") ?? styleGet(styleMap, "overflow-y");
+  if ((maxHeight === 0 || height === 0) && overflow === "hidden") return true;
+
+  return false;
+}
+
+/**
+ * Decide whether an element should be deleted before Markdown conversion.
+ * `styleMap` should already include stylesheet + inline resolution when available.
+ */
+export function isInvisibleElement(
+  el: {
+    tagName: string;
+    getAttribute: (name: string) => string | null;
+  },
+  styleMap: StyleMap,
+  options: VisibilityCheckOptions = {},
+): boolean {
+  if (isDangerousTag(el.tagName)) return true;
+  if (isTrackingPixel({ ...el, styleMap })) return true;
+
+  if (hasHardInjectionHide(styleMap)) return true;
+
+  if (isCollapsedUiOnly(styleMap, el)) {
+    if (options.preserveCollapsedQuotes) return false;
+    return true;
+  }
 
   return false;
 }
