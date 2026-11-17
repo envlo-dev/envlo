@@ -1,0 +1,18 @@
+X-Forwarded-To: acme@envlo.dev
+From: Company Support <support@company.com>
+To: acme@envlo.dev
+Subject: Fwd: HTML only forward
+Message-ID: <gmail-html-fwd-001@company.com>
+Date: Tue, 17 Nov 2026 21:30:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+
+<html><body>
+<div>---------- Forwarded message ---------<br>
+From: <strong>HTML Customer</strong> &lt;<a href="mailto:html.customer@example.com">html.customer@example.com</a>&gt;<br>
+Date: Tue, 17 Nov 2026 at 9:00 AM<br>
+Subject: HTML only forward<br>
+To: Company Support &lt;<a href="mailto:support@company.com">support@company.com</a>&gt;<br>
+</div>
+<p>Body exists only in HTML part.</p>
+</body></html>

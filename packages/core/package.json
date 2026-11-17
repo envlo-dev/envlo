@@ -27,6 +27,16 @@
         "types": "./dist/parser/index.d.cts",
         "default": "./dist/parser/index.cjs"
       }
+    },
+    "./forwarding": {
+      "import": {
+        "types": "./dist/forwarding/index.d.ts",
+        "default": "./dist/forwarding/index.js"
+      },
+      "require": {
+        "types": "./dist/forwarding/index.d.cts",
+        "default": "./dist/forwarding/index.cjs"
+      }
     }
   },
   "files": [

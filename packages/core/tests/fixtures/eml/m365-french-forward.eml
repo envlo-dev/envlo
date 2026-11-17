@@ -1,0 +1,17 @@
+X-Forwarded-To: acme@envlo.dev
+X-MS-Exchange-Organization-AutoForwarded: true
+From: Support Contoso <support@contoso.fr>
+To: Acme Envlo <acme@envlo.dev>
+Subject: TR: Question de facturation
+Date: Tue, 17 Nov 2026 21:10:00 +0000
+Message-ID: <m365-fr-fwd-001@contoso.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+________________________________
+From: Claire Client <claire@client.example>
+Envoyé: mardi 17 novembre 2026 10:15
+À: Support Contoso <support@contoso.fr>
+Objet: Question de facturation
+
+Bonjour, j'ai une question sur ma facture.

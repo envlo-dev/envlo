@@ -1,0 +1,30 @@
+X-Forwarded-To: acme@envlo.dev
+From: Company Support <support@company.com>
+To: Acme Inbox <acme@envlo.dev>
+Subject: Fwd: Nested rfc822 original
+Message-ID: <rfc822-outer-001@company.com>
+Date: Tue, 17 Nov 2026 21:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="Rfc822FwdBoundary"
+
+--Rfc822FwdBoundary
+Content-Type: text/plain; charset="utf-8"
+
+Forwarding the original message as an attachment.
+
+--Rfc822FwdBoundary
+Content-Type: message/rfc822; name="original.eml"
+Content-Disposition: attachment; filename="original.eml"
+Content-Transfer-Encoding: 7bit
+
+From: Nested Customer <nested@customer.example>
+To: Company Support <support@company.com>
+Subject: Nested rfc822 original
+Message-ID: <rfc822-inner-001@customer.example>
+Date: Tue, 17 Nov 2026 20:50:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+Please reply to the nested customer.
+
+--Rfc822FwdBoundary--

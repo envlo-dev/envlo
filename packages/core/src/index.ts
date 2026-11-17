@@ -48,3 +48,17 @@ export type {
   AuthMethodResult,
   SenderAuthDetails,
 } from "./parser/index.js";
+
+export {
+  unwrapForwarding,
+  applyForwardingUnwrap,
+  parseAddressString,
+  extractEmailsFromHeader,
+  parseGmailInlineForward,
+  parseM365InlineForward,
+  parseAppleInlineForward,
+  parseYahooInlineForward,
+  parseRfc822AttachmentSender,
+} from "./forwarding/index.js";
+
+export type { ForwardingDetection, ForwardingUnwrap } from "./forwarding/index.js";

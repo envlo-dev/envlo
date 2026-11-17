@@ -1,0 +1,12 @@
+X-Forwarded-To: acme@envlo.dev
+X-Forwarded-For: support@company.com
+From: Company Support <support@company.com>
+To: acme@envlo.dev
+Subject: Forwarded without inline original
+Message-ID: <xff-headers-only-001@company.com>
+Date: Tue, 17 Nov 2026 21:50:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+Gmail-style hop headers are present, but there is no inline/original block.
+X-Forwarded-For here is the company mailbox, not the customer.

@@ -1,5 +1,6 @@
 import PostalMime from "postal-mime";
 import type { Header } from "postal-mime";
+import { unwrapForwarding } from "../forwarding/unwrap-forwarding.js";
 import { firstAddress, flattenAddresses } from "./addresses.js";
 import { normalizeAttachments } from "./attachments.js";
 import { normalizeMessageId, parseReferencesHeader } from "./references.js";
@@ -26,6 +27,9 @@ function buildHeaderMap(headers: Header[]): ReadonlyMap<string, string[]> {
  * Accepts RFC 5322 byte/streams (`Uint8Array | ArrayBuffer | string`), parses with
  * `postal-mime`, and returns threading headers, bodies, attachment buffers, and a
  * coarse `senderAuthStatus` derived from Authentication-Results / Received-SPF.
+ *
+ * Also unwraps Gmail / Microsoft 365 auto-forwards so `trueOriginalSender` and
+ * `replyToAddress` point at the customer, not the forwarder mailbox.
  */
 export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> {
   const email = await PostalMime.parse(input, {
@@ -42,7 +46,7 @@ export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> 
     dmarc: authDetails.dmarc,
   };
 
-  return {
+  const base: IngestedMime = {
     messageId: normalizeMessageId(email.messageId ?? headerMap.get("message-id")?.[0]),
     inReplyTo: normalizeMessageId(email.inReplyTo ?? headerMap.get("in-reply-to")?.[0]),
     references: parseReferencesHeader(referencesHeader),
@@ -59,6 +63,15 @@ export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> 
     attachments: normalizeAttachments(email.attachments),
     senderAuthStatus: senderAuth.status,
     senderAuth,
+    trueOriginalSender: null,
+    replyToAddress: null,
     headers: headerMap,
+  };
+
+  const forwarding = await unwrapForwarding(base);
+  return {
+    ...base,
+    trueOriginalSender: forwarding.trueOriginalSender,
+    replyToAddress: forwarding.replyToAddress,
   };
 }
