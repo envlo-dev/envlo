@@ -1,0 +1,9 @@
+From: Mystery Sender <mystery@example.org>
+To: agent@envlo.dev
+Subject: No auth headers here
+Message-ID: <auth-unverified-001@example.org>
+Date: Mon, 16 Nov 2026 20:30:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+This message has no Authentication-Results or Received-SPF headers.

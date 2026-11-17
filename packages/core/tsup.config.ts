@@ -1,9 +1,18 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: {
+    index: "src/index.ts",
+    "parser/index": "src/parser/index.ts",
+  },
   format: ["esm", "cjs"],
-  dts: true,
+  dts: {
+    // tsup's DTS worker chokes on composite project references with multi-entry builds.
+    compilerOptions: {
+      composite: false,
+      declarationMap: true,
+    },
+  },
   sourcemap: true,
   clean: true,
   splitting: false,

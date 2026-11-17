@@ -1,0 +1,12 @@
+From: broken@example.com
+To: agent@envlo.dev
+Subject: Truncated multipart
+Message-ID: <malformed-001@example.com>
+Date: Tue, 17 Nov 2026 14:30:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="TruncBoundary"
+
+--TruncBoundary
+Content-Type: text/plain; charset="utf-8"
+
+This multipart body is intentionally truncated and has no closing boundary.
