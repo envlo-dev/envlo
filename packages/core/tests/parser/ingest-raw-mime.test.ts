@@ -128,15 +128,26 @@ describe("ingestRawMime", () => {
       "<gmail-dense-002@mail.gmail.com>",
     ]);
     expect(ingested.from?.address).toBe("taro.yamada@example.co.jp");
-    expect(ingested.from?.name).toContain("山田");
     expect(ingested.sender).toEqual({ name: "Mailing List", address: "list@example.co.jp" });
     expect(ingested.to).toHaveLength(2);
     expect(ingested.cc).toEqual([{ name: "Finance Desk", address: "finance@example.co.jp" }]);
-    expect(ingested.subject).toMatch(/請求|Re:/);
-    expect(ingested.text).toBeTruthy();
-    expect(ingested.html).toBeTruthy();
     expect(ingested.senderAuth.status).toBe("pass");
     expect(ingested.date).toBeTruthy();
+  });
+
+  it("decodes Japanese encoded-word From/Subject and UTF-8 bodies", async () => {
+    const ingested = await ingestRawMime(loadFixture("japanese-encoded-words.eml"));
+
+    expect(ingested.messageId).toBe("<japanese-001@example.co.jp>");
+    expect(ingested.from).toEqual({
+      name: "山田 太郎",
+      address: "taro.yamada@example.co.jp",
+    });
+    expect(ingested.subject).toBe("Re: ご請求についての確認");
+    expect(ingested.text).toContain("こんにちは");
+    expect(ingested.text).toContain("請求書");
+    expect(ingested.html).toContain("請求書");
+    expect(ingested.senderAuthStatus).toBe("pass");
   });
 
   it("parses dense M365 Spanish HTML-table reply with encoded subject", async () => {

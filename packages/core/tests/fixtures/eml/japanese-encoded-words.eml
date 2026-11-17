@@ -1,0 +1,26 @@
+Received-SPF: pass (mx.envlo.dev: domain of taro.yamada@example.co.jp designates 203.0.113.40 as permitted sender)
+Authentication-Results: mx.envlo.dev;
+       dkim=pass header.d=example.co.jp;
+       spf=pass smtp.mailfrom=taro.yamada@example.co.jp;
+       dmarc=pass header.from=example.co.jp
+MIME-Version: 1.0
+Date: Tue, 17 Nov 2026 09:30:00 +0900
+Message-ID: <japanese-001@example.co.jp>
+From: =?UTF-8?B?5bGx55SwIOWkqumDjg==?= <taro.yamada@example.co.jp>
+To: Envlo Agent <agent@envlo.dev>
+Subject: =?UTF-8?B?UmU6IOOBlOiri+axguOBq+OBpOOBhOOBpuOBrueiuuiqjQ==?=
+Content-Type: multipart/alternative; boundary="JapaneseBoundary01"
+
+--JapaneseBoundary01
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+44GT44KT44Gr44Gh44Gv44CC6KuL5rGC5pu444Gu5pu05paw44KS44GK6YCB44KK44GX44G+44GZ44CC
+
+--JapaneseBoundary01
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+PGRpdiBkaXI9Imx0ciI+44GT44KT44Gr44Gh44Gv44CCPGI+6KuL5rGC5pu4PC9iPuOBruabtOaWsOOCkuOBiumAgeOCiuOBl+OBvuOBmeOAgjwvZGl2Pg==
+
+--JapaneseBoundary01--
