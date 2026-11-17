@@ -1,0 +1,15 @@
+# OSV Scanner config for the root pnpm-lock.yaml.
+# https://google.github.io/osv-scanner/configuration/
+
+[[IgnoredVulns]]
+id = "GHSA-fc5q-39xc-vjpf"
+# No npm release yet; micromatch/picomatch#194 is still open (affects <=4.0.7).
+effectiveUntil = 2026-12-31
+reason = """
+picomatch ReDoS (CVE-2026-112366) has no fixed version published.
+It is pulled only via the eslint/typescript-eslint → tinyglobby → fdir
+devDependency chain, not @envlo/core/@envlo/mcp runtime code. Attack
+requires feeding crafted extglob patterns into picomatch; that path is
+not exposed to untrusted email/MIME input. Remove this ignore once
+picomatch >4.0.7 ships and pnpm-lock.yaml picks it up.
+"""

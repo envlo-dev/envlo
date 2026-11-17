@@ -27,7 +27,15 @@
     },
     "onlyBuiltDependencies": [
       "esbuild"
-    ]
+    ],
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-fc5q-39xc-vjpf"
+      ],
+      "ignoreCves": [
+        "CVE-2026-112366"
+      ]
+    }
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
