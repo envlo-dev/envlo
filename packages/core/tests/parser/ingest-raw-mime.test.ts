@@ -222,6 +222,28 @@ describe("ingestRawMime", () => {
     expect(ingested.sanitizeTimedOut).toBe(false);
   });
 
+  it("scores and spotlights visible body for agent context", async () => {
+    const ingested = await ingestRawMime(loadFixture("ses-inbound.eml"));
+    expect(ingested.injectionRisk).toBe("low");
+    expect(ingested.spotlightedText).toContain("untrusted_email_content");
+    expect(ingested.spotlightedText).toContain("Thanks for your payment");
+    expect(ingested.spotlightedText).toContain("nonce=");
+  });
+
+  it("marks visible override text as high injection risk on ingest", async () => {
+    const ingested = await ingestRawMime(loadFixture("visible-injection.eml"));
+    expect(ingested.injectionRisk).toBe("high");
+    expect(ingested.injectionPoints).toBeGreaterThanOrEqual(8);
+    expect(ingested.spotlightedText).toContain("Ignore previous instructions");
+    expect(ingested.spotlightedText).toContain('injection_risk="high"');
+  });
+
+  it("keeps risk low when only hidden HTML injection was stripped", async () => {
+    const ingested = await ingestRawMime(loadFixture("html-hidden-injection.eml"));
+    expect(ingested.safeMarkdown).toContain("invoice");
+    expect(ingested.injectionRisk).toBe("low");
+  });
+
   it("returns null messageId when header is absent", async () => {
     const ingested = await ingestRawMime(loadFixture("missing-message-id.eml"));
     expect(ingested.messageId).toBeNull();

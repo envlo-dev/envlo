@@ -1,6 +1,8 @@
 import PostalMime from "postal-mime";
 import type { Header } from "postal-mime";
 import { htmlToSafeMarkdown } from "../firewall/html-to-markdown.js";
+import { scoreInjectionRisk } from "../firewall/injection/score.js";
+import { spotlightUntrustedEmail } from "../firewall/injection/spotlight.js";
 import { unwrapForwarding } from "../forwarding/unwrap-forwarding.js";
 import { firstAddress, flattenAddresses } from "./addresses.js";
 import { normalizeAttachments } from "./attachments.js";
@@ -31,6 +33,9 @@ function buildHeaderMap(headers: Header[]): ReadonlyMap<string, string[]> {
  *
  * Also unwraps Gmail / Microsoft 365 auto-forwards so `trueOriginalSender` and
  * `replyToAddress` point at the customer, not the forwarder mailbox.
+ *
+ * Visible HTML is sanitized to `safeMarkdown`, then scored for prompt injection
+ * and wrapped as `spotlightedText` for agent context.
  */
 export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> {
   const email = await PostalMime.parse(input, {
@@ -48,6 +53,7 @@ export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> 
   };
 
   const html = email.html ?? null;
+  const text = email.text ?? null;
   const sanitized = html
     ? htmlToSafeMarkdown(html)
     : { markdown: "", strippedHiddenElementsCount: 0, timedOut: false, html: "" };
@@ -65,10 +71,14 @@ export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> 
     subject: email.subject ?? null,
     date: email.date ?? headerMap.get("date")?.[0] ?? null,
     html,
-    text: email.text ?? null,
+    text,
     safeMarkdown: html ? sanitized.markdown : null,
     strippedHiddenElementsCount: sanitized.strippedHiddenElementsCount,
     sanitizeTimedOut: sanitized.timedOut,
+    injectionRisk: "low",
+    injectionPoints: 0,
+    injectionReasons: [],
+    spotlightedText: null,
     attachments: normalizeAttachments(email.attachments),
     senderAuthStatus: senderAuth.status,
     senderAuth,
@@ -78,9 +88,41 @@ export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> 
   };
 
   const forwarding = await unwrapForwarding(base);
-  return {
+  const withForwarding: IngestedMime = {
     ...base,
     trueOriginalSender: forwarding.trueOriginalSender,
     replyToAddress: forwarding.replyToAddress,
+  };
+
+  const visibleBody =
+    (withForwarding.safeMarkdown && withForwarding.safeMarkdown.trim()) ||
+    (withForwarding.text && withForwarding.text.trim()) ||
+    "";
+
+  if (!visibleBody) {
+    return withForwarding;
+  }
+
+  const score = await scoreInjectionRisk(visibleBody, {
+    senderAuthStatus: withForwarding.senderAuth.status,
+  });
+
+  const senderForSpotlight =
+    withForwarding.trueOriginalSender?.address ??
+    withForwarding.from?.address ??
+    null;
+
+  const spotlightedText = spotlightUntrustedEmail(visibleBody, {
+    sender: senderForSpotlight,
+    spfDkim: withForwarding.senderAuth.status,
+    injectionRisk: score.risk,
+  });
+
+  return {
+    ...withForwarding,
+    injectionRisk: score.risk,
+    injectionPoints: score.points,
+    injectionReasons: score.reasons,
+    spotlightedText,
   };
 }
