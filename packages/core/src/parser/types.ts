@@ -73,6 +73,20 @@ export type IngestedMime = {
   strippedHiddenElementsCount: number;
   /** True when HTML sanitize hit the timeout/size guard (Markdown will be empty). */
   sanitizeTimedOut: boolean;
+  /**
+   * Visible prompt-injection risk for the agent-facing body
+   * (`safeMarkdown` ?? `text`).
+   */
+  injectionRisk: "low" | "medium" | "high";
+  /** Numeric heuristic points that produced `injectionRisk`. */
+  injectionPoints: number;
+  /** Machine-readable scoring reasons (phrases, tokens, encodings, …). */
+  injectionReasons: Array<{ code: string; detail: string; weight?: number }>;
+  /**
+   * Spotlight-wrapped body for LLM context (nonced XML + security header/footer).
+   * Null when there is no visible text/html body to wrap.
+   */
+  spotlightedText: string | null;
   attachments: IngestedAttachment[];
   /** @deprecated Prefer `senderAuth.status` — kept as a shorthand. */
   senderAuthStatus: SenderAuthStatus;
