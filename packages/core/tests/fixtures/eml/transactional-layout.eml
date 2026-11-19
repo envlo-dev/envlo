@@ -1,0 +1,44 @@
+From: ship@shop.example.com
+To: sam@example.com
+Subject: Your order is on the way
+MIME-Version: 1.0
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html>
+<html>
+  <body>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f4f4">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff">
+            <tr>
+              <td style="padding: 24px 32px;">
+                <h1 style="font-size: 22px; margin: 0 0 12px;">Your order is on the way</h1>
+                <p style="margin: 0 0 12px; color: #333;">
+                  Hi Sam — package <strong>A-10422</strong> shipped via UPS.
+                </p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="50%" valign="top">
+                      <p style="margin: 0 0 4px; font-weight: bold;">Ship to</p>
+                      <p style="margin: 0; color: #555;">Sam Rivera<br />Austin, TX</p>
+                    </td>
+                    <td width="50%" valign="top">
+                      <p style="margin: 0 0 4px; font-weight: bold;">Items</p>
+                      <p style="margin: 0; color: #555;">1× Trail Bottle</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 32px 32px;" align="center">
+                <a href="https://shop.example.com/orders/A-10422">View order</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -89,11 +89,7 @@ function runSanitize(
 
   try {
     guard.check();
-    // linkedom fragment parsing makes the first element the documentElement and
-    // leaves body empty — wrap so we always have a stable <body> to serialize.
-    const { document } = parseHTML(`<!DOCTYPE html><html><body></body></html>`);
-    document.body.innerHTML = html;
-
+    const document = parseEmailHtmlDocument(html);
     const body = document.body as unknown as DomNode;
     const rules = collectStylesheetRules(body, guard);
     strippedHiddenElementsCount = stripInvisibleTree(body, guard, rules, options);
@@ -132,9 +128,7 @@ async function runSanitizeAsync(
 
   try {
     guard.check();
-    const { document } = parseHTML(`<!DOCTYPE html><html><body></body></html>`);
-    document.body.innerHTML = html;
-
+    const document = parseEmailHtmlDocument(html);
     const body = document.body as unknown as DomNode;
     const rules = collectStylesheetRules(body, guard);
     strippedHiddenElementsCount = await stripInvisibleTreeAsync(
@@ -160,6 +154,32 @@ async function runSanitizeAsync(
     }
     throw error;
   }
+}
+
+/**
+ * Load email HTML into a document with a stable `<body>`.
+ * Full documents (`<!DOCTYPE>` / `<html>`) must be parsed as documents — stuffing
+ * them into `body.innerHTML` collapses to nearly empty markup in linkedom.
+ */
+function parseEmailHtmlDocument(html: string): {
+  body: { innerHTML: string };
+} {
+  const looksLikeDocument = /<!DOCTYPE\b|<html[\s>]/i.test(html);
+  if (looksLikeDocument) {
+    const { document } = parseHTML(html);
+    if (!document.body) {
+      const wrapped = parseHTML(`<!DOCTYPE html><html><body></body></html>`);
+      wrapped.document.body.innerHTML = html;
+      return wrapped.document;
+    }
+    return document;
+  }
+
+  // Fragments: linkedom otherwise promotes the first element to documentElement
+  // and leaves body empty — wrap so we always have a stable <body> to serialize.
+  const { document } = parseHTML(`<!DOCTYPE html><html><body></body></html>`);
+  document.body.innerHTML = html;
+  return document;
 }
 
 function collectStylesheetRules(root: DomNode, guard: TimeoutGuard): StylesheetRules {

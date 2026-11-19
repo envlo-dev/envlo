@@ -6,7 +6,9 @@ export default defineConfig({
     "parser/index": "src/parser/index.ts",
     "forwarding/index": "src/forwarding/index.ts",
     "firewall/index": "src/firewall/index.ts",
+    "markdown/index": "src/markdown/index.ts",
   },
+
   format: ["esm", "cjs"],
   dts: {
     // tsup's DTS worker chokes on composite project references with multi-entry builds.

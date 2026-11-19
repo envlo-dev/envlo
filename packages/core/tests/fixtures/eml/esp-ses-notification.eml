@@ -1,0 +1,75 @@
+Return-Path: <bounce@amazonses.com>
+Received: from a8-31.smtp-out.amazonses.com (a8-31.smtp-out.amazonses.com [54.240.8.31])
+ by inbound-smtp.us-east-1.amazonaws.com with SMTP id ses-bounce-010203;
+ Thu, 19 Nov 2026 21:15:00 +0000 (UTC)
+Received-SPF: pass
+Authentication-Results: amazonses.com;
+       spf=pass smtp.mailfrom=amazonses.com;
+       dkim=pass header.i=@amazonses.com;
+       dmarc=pass header.from=amazonses.com
+From: Amazon SES <no-reply-aws@amazonses.com>
+To: ops@envlo.example
+Subject: Amazon SES Bounce Notification
+Message-ID: <ses-bounce-010203@email.amazonses.com>
+Date: Thu, 19 Nov 2026 21:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="SESBoundary_Bounce010203"
+
+--SESBoundary_Bounce010203
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Bounce for alerts@ops.envlo.example. Message ID ses-0102030405060708090a0b.
+
+--SESBoundary_Bounce010203
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css">
+      body { font-family: Amazon Ember, Helvetica, Arial, sans-serif; background: #eaeded; margin: 0; }
+    </style>
+  </head>
+  <body>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eaeded">
+      <tr>
+        <td align="center" style="padding: 16px;">
+          <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff">
+            <tr>
+              <td bgcolor="#232f3e" style="padding: 16px 24px; color: #ffffff; font-size: 18px; font-weight: bold;">
+                Amazon SES
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 24px; color: #16191f; font-size: 14px; line-height: 20px;">
+                <h1 style="margin: 0 0 12px; font-size: 20px;">Bounce notification</h1>
+                <p style="margin: 0 0 12px;">
+                  Amazon SES was unable to deliver a message for identity
+                  <strong>alerts@ops.envlo.example</strong>.
+                </p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f9f9f9">
+                  <tr>
+                    <td style="padding: 12px; font-size: 13px;">
+                      <strong>Message ID:</strong> ses-0102030405060708090a0b<br />
+                      <strong>Recipient:</strong> gone@invalid.example<br />
+                      <strong>Diagnostic:</strong> smtp; 550 5.1.1 user unknown
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin: 16px 0 0;">
+                  Review delivery stats in the
+                  <a href="https://console.aws.amazon.com/ses/home?region=us-east-1#/reputation">SES console</a>.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+
+--SESBoundary_Bounce010203--

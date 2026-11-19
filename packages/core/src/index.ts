@@ -39,6 +39,7 @@ export {
 
 export type {
   RawMimeInput,
+  IngestRawMimeOptions,
   SenderAuthStatus,
   AuthMethodOutcome,
   MimeAddress,
@@ -109,3 +110,22 @@ export type {
   AnalyzeAndSpotlightResult,
   AgentPromptParts,
 } from "./firewall/index.js";
+
+export {
+  htmlToAgentMarkdown,
+  plainTextToAgentMarkdown,
+  flattenHtmlToMarkdown,
+  naiveHtmlToMarkdown,
+  stripQuotedReply,
+  isLayoutTable,
+  estimateTokenCount,
+  compressionRatio,
+} from "./markdown/index.js";
+
+export type {
+  HtmlToAgentMarkdownOptions,
+  FlattenHtmlOptions,
+  FlattenHtmlResult,
+  StripQuotesResult,
+  AgentMarkdownResult,
+} from "./markdown/index.js";

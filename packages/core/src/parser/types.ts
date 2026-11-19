@@ -1,6 +1,27 @@
 /** Accepted raw RFC 5322 MIME inputs for `ingestRawMime`. */
 export type RawMimeInput = Uint8Array | ArrayBuffer | string;
 
+/**
+ * Options for agent Markdown generation during ingest.
+ * Defaults strip quoted history and signatures (token-efficient for agents).
+ */
+export type IngestRawMimeOptions = {
+  /** Keep `On … wrote:` / Outlook quote tails in agent-facing body. Default false. */
+  includeQuotedHistory?: boolean;
+  /** Keep trailing signatures (`--`, mobile footers). Default false. */
+  includeSignatures?: boolean;
+  /**
+   * Run DOM sanitize before Markdown (default true).
+   * Set false only for already-trusted HTML.
+   */
+  sanitize?: boolean;
+  /**
+   * Flatten email layout tables into stacked Markdown (default true).
+   * Set false to force-keep tables as structured content.
+   */
+  flattenLayoutTables?: boolean;
+};
+
 /** Aggregated SPF/DKIM/DMARC verdict for spoofing detection. */
 export type SenderAuthStatus = "pass" | "fail" | "unverified";
 
@@ -65,14 +86,22 @@ export type IngestedMime = {
   html: string | null;
   text: string | null;
   /**
-   * Agent-safe Markdown from sanitized HTML (invisible prompt-injection removed).
-   * Null when there is no HTML part. Prefer this over raw `html` for LLM context.
+   * Agent-safe Markdown from sanitized + layout-flattened HTML with quoted
+   * history stripped. Null when there is no HTML part. Prefer this over raw
+   * `html` for LLM context.
    */
   safeMarkdown: string | null;
   /** Elements removed by the DOM sanitizer while building `safeMarkdown`. */
   strippedHiddenElementsCount: number;
   /** True when HTML sanitize hit the timeout/size guard (Markdown will be empty). */
   sanitizeTimedOut: boolean;
+  /** Layout `<table>` grids flattened while building `safeMarkdown`. */
+  layoutTablesFlattened: number;
+  /**
+   * Token footprint reduction vs original HTML (`0.8` ≈ 80% smaller).
+   * Null when there was no HTML body to convert.
+   */
+  markdownCompressionRatio: number | null;
   /**
    * Visible prompt-injection risk for the agent-facing body
    * (`safeMarkdown` ?? `text`).

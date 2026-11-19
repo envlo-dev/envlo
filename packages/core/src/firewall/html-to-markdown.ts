@@ -18,7 +18,10 @@ function getTurndown(): TurndownService {
 /**
  * Delete invisible / dangerous DOM nodes, then convert cleaned HTML to Markdown.
  *
- * Intended for **LLM / agent context**, not for rendering a faithful email preview.
+ * **Prefer `htmlToAgentMarkdown` from `@envlo/core/markdown` (or ingest via
+ * `ingestRawMime`) for agent context.** That path also flattens email layout
+ * tables and strips quoted reply history — this helper only sanitizes + Turndown.
+ *
  * Hidden prompt-injection text must never reach the Markdown string.
  */
 export function htmlToSafeMarkdown(
