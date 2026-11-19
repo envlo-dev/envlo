@@ -1,0 +1,76 @@
+Return-Path: <bounce@mt.shop.example>
+Received: from p-pm-showerfeeder01.east.x.inbound.postmarkapp.com (unknown [127.0.0.1])
+ by p-pm-smtpfeeder01 with SMTP id 00-pm-55109;
+ Thu, 19 Nov 2026 21:05:00 +0000
+Received-SPF: pass
+Authentication-Results: mx.example.com;
+       dkim=pass header.d=mt.shop.example;
+       spf=pass smtp.mailfrom=pm.mtasv.net;
+       dmarc=pass header.from=mt.shop.example
+From: Shop Shipping <ship@mt.shop.example>
+To: Avery <avery@example.com>
+Subject: Your package shipped (PM-55109)
+Message-ID: <pm-55109@mt.shop.example>
+Date: Thu, 19 Nov 2026 21:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="PostmarkBoundary_PM55109"
+
+--PostmarkBoundary_PM55109
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Order PM-55109 shipped. Tracking 9400111899223344556677. https://app.shop.example/orders/PM-55109
+
+--PostmarkBoundary_PM55109
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Shipment update</title>
+    <style>
+      body { background:#eef2f7; margin:0; }
+      a { color:#0f6a4a; }
+    </style>
+  </head>
+  <body>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eef2f7">
+      <tr>
+        <td align="center" style="padding:20px;">
+          <table role="presentation" width="580" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff">
+            <tr>
+              <td style="padding:24px 28px;font-family:Helvetica,Arial,sans-serif;">
+                <p style="margin:0 0 4px;font-size:12px;color:#667085;">Postmark transactional · PM-55109</p>
+                <h1 style="margin:0 0 12px;font-size:20px;color:#101828;">Your package shipped</h1>
+                <p style="margin:0 0 14px;font-size:15px;line-height:22px;color:#344054;">
+                  Hi Avery — order <strong>PM-55109</strong> left our warehouse via USPS.
+                  Tracking number
+                  <a href="https://tools.usps.com/go/TrackConfirmAction?tLabels=9400111899223344556677">9400111899223344556677</a>.
+                </p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f8fafc">
+                  <tr>
+                    <td style="padding:14px;font-family:Helvetica,Arial,sans-serif;font-size:14px;color:#475467;">
+                      <strong>ETA:</strong> Thu, Nov 20<br />
+                      <strong>Items:</strong> 1× Desk Lamp (Oak)
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:0 28px 28px;">
+                <a href="https://app.shop.example/orders/PM-55109" style="font-family:Helvetica,Arial,sans-serif;font-weight:bold;">
+                  Track shipment
+                </a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+
+--PostmarkBoundary_PM55109--

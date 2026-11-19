@@ -4,6 +4,7 @@ export { parseReferencesHeader, normalizeMessageId } from "./references.js";
 
 export type {
   RawMimeInput,
+  IngestRawMimeOptions,
   SenderAuthStatus,
   AuthMethodOutcome,
   MimeAddress,

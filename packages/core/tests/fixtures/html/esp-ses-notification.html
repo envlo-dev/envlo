@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css">
+      body { font-family: Amazon Ember, Helvetica, Arial, sans-serif; background: #eaeded; margin: 0; }
+    </style>
+  </head>
+  <body>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eaeded">
+      <tr>
+        <td align="center" style="padding: 16px;">
+          <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff">
+            <tr>
+              <td bgcolor="#232f3e" style="padding: 16px 24px; color: #ffffff; font-size: 18px; font-weight: bold;">
+                Amazon SES
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 24px; color: #16191f; font-size: 14px; line-height: 20px;">
+                <h1 style="margin: 0 0 12px; font-size: 20px;">Bounce notification</h1>
+                <p style="margin: 0 0 12px;">
+                  Amazon SES was unable to deliver a message for identity
+                  <strong>alerts@ops.envlo.example</strong>.
+                </p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f9f9f9">
+                  <tr>
+                    <td style="padding: 12px; font-size: 13px;">
+                      <strong>Message ID:</strong> ses-0102030405060708090a0b<br />
+                      <strong>Recipient:</strong> gone@invalid.example<br />
+                      <strong>Diagnostic:</strong> smtp; 550 5.1.1 user unknown
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin: 16px 0 0;">
+                  Review delivery stats in the
+                  <a href="https://console.aws.amazon.com/ses/home?region=us-east-1#/reputation">SES console</a>.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

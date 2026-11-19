@@ -1,14 +1,22 @@
 import PostalMime from "postal-mime";
 import type { Header } from "postal-mime";
-import { htmlToSafeMarkdown } from "../firewall/html-to-markdown.js";
 import { scoreInjectionRisk } from "../firewall/injection/score.js";
 import { spotlightUntrustedEmail } from "../firewall/injection/spotlight.js";
 import { unwrapForwarding } from "../forwarding/unwrap-forwarding.js";
+import {
+  htmlToAgentMarkdown,
+  plainTextToAgentMarkdown,
+} from "../markdown/html-to-agent-markdown.js";
 import { firstAddress, flattenAddresses } from "./addresses.js";
 import { normalizeAttachments } from "./attachments.js";
 import { normalizeMessageId, parseReferencesHeader } from "./references.js";
 import { evaluateSenderAuth } from "./sender-auth.js";
-import type { IngestedMime, RawMimeInput, SenderAuth } from "./types.js";
+import type {
+  IngestedMime,
+  IngestRawMimeOptions,
+  RawMimeInput,
+  SenderAuth,
+} from "./types.js";
 
 function buildHeaderMap(headers: Header[]): ReadonlyMap<string, string[]> {
   const map = new Map<string, string[]>();
@@ -34,10 +42,22 @@ function buildHeaderMap(headers: Header[]): ReadonlyMap<string, string[]> {
  * Also unwraps Gmail / Microsoft 365 auto-forwards so `trueOriginalSender` and
  * `replyToAddress` point at the customer, not the forwarder mailbox.
  *
- * Visible HTML is sanitized to `safeMarkdown`, then scored for prompt injection
- * and wrapped as `spotlightedText` for agent context.
+ * Visible HTML is sanitized, layout-flattened, and quote-stripped into
+ * `safeMarkdown`, then scored for prompt injection and wrapped as
+ * `spotlightedText` for agent context.
+ *
+ * Prefer this over firewall `htmlToSafeMarkdown` for agent bodies — that helper
+ * only sanitizes + Turndowns and does **not** flatten layout tables or strip quotes.
  */
-export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> {
+export async function ingestRawMime(
+  input: RawMimeInput,
+  options: IngestRawMimeOptions = {},
+): Promise<IngestedMime> {
+  const includeQuotedHistory = options.includeQuotedHistory ?? false;
+  const includeSignatures = options.includeSignatures ?? false;
+  const sanitize = options.sanitize ?? true;
+  const flattenLayoutTables = options.flattenLayoutTables ?? true;
+
   const email = await PostalMime.parse(input, {
     attachmentEncoding: "arraybuffer",
   });
@@ -54,9 +74,17 @@ export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> 
 
   const html = email.html ?? null;
   const text = email.text ?? null;
-  const sanitized = html
-    ? htmlToSafeMarkdown(html)
-    : { markdown: "", strippedHiddenElementsCount: 0, timedOut: false, html: "" };
+  const agentMarkdown = html
+    ? htmlToAgentMarkdown(html, {
+        includeQuotedHistory,
+        includeSignatures,
+        sanitize,
+        flattenLayoutTables,
+      })
+    : null;
+  const agentText = !html && text
+    ? plainTextToAgentMarkdown(text, { includeQuotedHistory, includeSignatures })
+    : null;
 
   const base: IngestedMime = {
     messageId: normalizeMessageId(email.messageId ?? headerMap.get("message-id")?.[0]),
@@ -72,9 +100,11 @@ export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> 
     date: email.date ?? headerMap.get("date")?.[0] ?? null,
     html,
     text,
-    safeMarkdown: html ? sanitized.markdown : null,
-    strippedHiddenElementsCount: sanitized.strippedHiddenElementsCount,
-    sanitizeTimedOut: sanitized.timedOut,
+    safeMarkdown: agentMarkdown?.markdown ?? null,
+    strippedHiddenElementsCount: agentMarkdown?.strippedHiddenElementsCount ?? 0,
+    sanitizeTimedOut: agentMarkdown?.sanitizeTimedOut ?? false,
+    layoutTablesFlattened: agentMarkdown?.layoutTablesFlattened ?? 0,
+    markdownCompressionRatio: agentMarkdown?.compressionRatio ?? null,
     injectionRisk: "low",
     injectionPoints: 0,
     injectionReasons: [],
@@ -96,6 +126,7 @@ export async function ingestRawMime(input: RawMimeInput): Promise<IngestedMime> 
 
   const visibleBody =
     (withForwarding.safeMarkdown && withForwarding.safeMarkdown.trim()) ||
+    (agentText?.markdown && agentText.markdown.trim()) ||
     (withForwarding.text && withForwarding.text.trim()) ||
     "";
 

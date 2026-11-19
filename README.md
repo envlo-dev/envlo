@@ -6,7 +6,7 @@ Open-source agent email firewall and stateful MCP inbox engine.
 
 | Package | Description |
 | ------- | ----------- |
-| [`@envlo/core`](./packages/core) | MIME firewall, DOM sanitizer, and email state engine |
+| [`@envlo/core`](./packages/core) | MIME firewall, DOM sanitizer, layout→Markdown flattener, and email state engine |
 | [`@envlo/mcp`](./packages/mcp) | MCP server exposing Envlo inbox tools over stdio and Streamable HTTP |
 
 ## Install

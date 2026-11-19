@@ -1,0 +1,11 @@
+Thanks — that fixes the invoice amount.
+
+-----Original Message-----
+From: Company Support <support@company.com>
+Sent: Tuesday, November 10, 2026 9:00 AM
+To: Alice Customer <alice@example.com>
+Subject: Re: Invoice
+
+Can you confirm the invoice amount?
+
+Thanks

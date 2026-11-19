@@ -47,8 +47,19 @@
         "types": "./dist/firewall/index.d.cts",
         "default": "./dist/firewall/index.cjs"
       }
+    },
+    "./markdown": {
+      "import": {
+        "types": "./dist/markdown/index.d.ts",
+        "default": "./dist/markdown/index.js"
+      },
+      "require": {
+        "types": "./dist/markdown/index.d.cts",
+        "default": "./dist/markdown/index.cjs"
+      }
     }
   },
+
   "files": [
     "dist",
     "LICENSE"
