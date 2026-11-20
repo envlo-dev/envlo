@@ -3,6 +3,7 @@ import type { Header } from "postal-mime";
 import { scoreInjectionRisk } from "../firewall/injection/score.js";
 import { spotlightUntrustedEmail } from "../firewall/injection/spotlight.js";
 import { unwrapForwarding } from "../forwarding/unwrap-forwarding.js";
+import { extractAuthSignals } from "../extract/extract-auth.js";
 import {
   htmlToAgentMarkdown,
   plainTextToAgentMarkdown,
@@ -44,7 +45,8 @@ function buildHeaderMap(headers: Header[]): ReadonlyMap<string, string[]> {
  *
  * Visible HTML is sanitized, layout-flattened, and quote-stripped into
  * `safeMarkdown`, then scored for prompt injection and wrapped as
- * `spotlightedText` for agent context.
+ * `spotlightedText` for agent context. Also extracts `extractedOtp` and
+ * `verificationUrl` from subject/text/html when present.
  *
  * Prefer this over firewall `htmlToSafeMarkdown` for agent bodies — that helper
  * only sanitizes + Turndowns and does **not** flatten layout tables or strip quotes.
@@ -86,6 +88,12 @@ export async function ingestRawMime(
     ? plainTextToAgentMarkdown(text, { includeQuotedHistory, includeSignatures })
     : null;
 
+  const authSignals = extractAuthSignals({
+    html,
+    text,
+    subject: email.subject ?? null,
+  });
+
   const base: IngestedMime = {
     messageId: normalizeMessageId(email.messageId ?? headerMap.get("message-id")?.[0]),
     inReplyTo: normalizeMessageId(email.inReplyTo ?? headerMap.get("in-reply-to")?.[0]),
@@ -109,6 +117,8 @@ export async function ingestRawMime(
     injectionPoints: 0,
     injectionReasons: [],
     spotlightedText: null,
+    extractedOtp: authSignals.extractedOtp,
+    verificationUrl: authSignals.verificationUrl,
     attachments: normalizeAttachments(email.attachments),
     senderAuthStatus: senderAuth.status,
     senderAuth,

@@ -1,0 +1,9 @@
+From: App <noreply@app.example>
+To: user@example.com
+Subject: 認証コード
+Message-ID: <locale-ja-auth-code@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+認証コードは 847291 です。

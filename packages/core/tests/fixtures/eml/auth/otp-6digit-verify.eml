@@ -1,0 +1,20 @@
+From: Acme Auth <noreply@acme.example>
+To: user@example.com
+Subject: Your verification code
+Message-ID: <otp-6digit-verify@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AuthBoundary_otp-6digit-verify"
+
+--AuthBoundary_otp-6digit-verify
+Content-Type: text/plain; charset="UTF-8"
+
+Your verification code is 482913. It expires in 10 minutes.
+
+--AuthBoundary_otp-6digit-verify
+Content-Type: text/html; charset="UTF-8"
+
+<html><body><p>Your verification code is <strong>482913</strong>.</p>
+<a href="https://acme.example/unsubscribe">Unsubscribe</a></body></html>
+
+--AuthBoundary_otp-6digit-verify--

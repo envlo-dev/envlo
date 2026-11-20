@@ -1,0 +1,21 @@
+From: Shop <orders@shop.example>
+To: user@example.com
+Subject: Order #10422 shipped
+Message-ID: <order-email-no-auth@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AuthBoundary_order-email-no-auth"
+
+--AuthBoundary_order-email-no-auth
+Content-Type: text/plain; charset="UTF-8"
+
+Order 10422 shipped to 94105. Tracking 940011189922.
+
+--AuthBoundary_order-email-no-auth
+Content-Type: text/html; charset="UTF-8"
+
+<p>Order 10422 shipped.</p>
+<a href="https://shop.example/orders/10422">View order</a>
+<a href="https://shop.example/unsubscribe">Unsubscribe</a>
+
+--AuthBoundary_order-email-no-auth--

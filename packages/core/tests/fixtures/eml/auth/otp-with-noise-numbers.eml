@@ -1,0 +1,9 @@
+From: Auth <auth@saas.example>
+To: user@example.com
+Subject: Security code
+Message-ID: <otp-with-noise-numbers@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+© 2026 SaaS Inc. ZIP 94107. Your security code is 883421. Color #00AAFF.

@@ -1,0 +1,9 @@
+From: Corp SSO <sso@corp.example>
+To: user@example.com
+Subject: 2FA one-time passcode
+Message-ID: <otp-8digit-2fa@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Your one-time passcode is 19283746.

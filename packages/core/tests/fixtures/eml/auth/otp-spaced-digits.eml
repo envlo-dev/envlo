@@ -1,0 +1,9 @@
+From: Auth <auth@app.example>
+To: user@example.com
+Subject: Your login code
+Message-ID: <otp-spaced-digits@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Your login code is 4 8 2 9 1 3. Expires soon.

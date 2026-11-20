@@ -1,0 +1,22 @@
+From: Auth0 <noreply@auth0user.com>
+To: user@example.com
+Subject: Verify your email
+Message-ID: <auth0-verify@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AuthBoundary_auth0-verify"
+
+--AuthBoundary_auth0-verify
+Content-Type: text/plain; charset="UTF-8"
+
+Please verify: https://myapp.auth0.com/verify_email?ticket=abc
+
+--AuthBoundary_auth0-verify
+Content-Type: text/html; charset="UTF-8"
+
+<html><body>
+<a href="https://myapp.auth0.com/verify_email?ticket=abc">Verify Your Account</a>
+<a href="https://twitter.com/auth0">Twitter</a>
+</body></html>
+
+--AuthBoundary_auth0-verify--

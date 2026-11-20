@@ -116,6 +116,17 @@ export type IngestedMime = {
    * Null when there is no visible text/html body to wrap.
    */
   spotlightedText: string | null;
+  /**
+   * Best verification / OTP / device code near auth keywords, or null when none
+   * found. Supports numeric (incl. spaced/hyphenated), alphanumeric, and
+   * device codes. Years, ZIP codes, and hex colors are ignored.
+   */
+  extractedOtp: string | null;
+  /**
+   * Highest-scoring verification / magic link (`<a href>` or bare URL), or null.
+   * Unsubscribe / privacy / social noise is filtered out.
+   */
+  verificationUrl: string | null;
   attachments: IngestedAttachment[];
   /** @deprecated Prefer `senderAuth.status` — kept as a shorthand. */
   senderAuthStatus: SenderAuthStatus;

@@ -1,0 +1,26 @@
+From: Linear <noreply@linear.app>
+To: user@example.com
+Subject: Your Linear login code
+Message-ID: <html-big-otp-button-link@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AuthBoundary_html-big-otp-button-link"
+
+--AuthBoundary_html-big-otp-button-link
+Content-Type: text/plain; charset="UTF-8"
+
+Your login code is 248137
+
+--AuthBoundary_html-big-otp-button-link
+Content-Type: text/html; charset="UTF-8"
+
+<html><body>
+<table role="presentation"><tr><td>
+<p>Your login code is</p>
+<p style="font-size:32px;letter-spacing:4px">248137</p>
+<a href="https://linear.app/login?code=248137">Log in</a>
+<a href="https://linear.app/settings/notifications">Notification preferences</a>
+</td></tr></table>
+</body></html>
+
+--AuthBoundary_html-big-otp-button-link--

@@ -57,6 +57,16 @@
         "types": "./dist/markdown/index.d.cts",
         "default": "./dist/markdown/index.cjs"
       }
+    },
+    "./extract": {
+      "import": {
+        "types": "./dist/extract/index.d.ts",
+        "default": "./dist/extract/index.js"
+      },
+      "require": {
+        "types": "./dist/extract/index.d.cts",
+        "default": "./dist/extract/index.cjs"
+      }
     }
   },
 

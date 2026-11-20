@@ -7,6 +7,7 @@ export default defineConfig({
     "forwarding/index": "src/forwarding/index.ts",
     "firewall/index": "src/firewall/index.ts",
     "markdown/index": "src/markdown/index.ts",
+    "extract/index": "src/extract/index.ts",
   },
 
   format: ["esm", "cjs"],

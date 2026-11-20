@@ -1,0 +1,9 @@
+From: App <noreply@app.example>
+To: user@example.com
+Subject: Código de verificação
+Message-ID: <locale-pt-codigo@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+O seu código de verificação é 556677.

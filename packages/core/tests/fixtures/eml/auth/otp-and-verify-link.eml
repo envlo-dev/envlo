@@ -1,0 +1,24 @@
+From: Shopify <account@shop.example>
+To: user@example.com
+Subject: Confirm your email
+Message-ID: <otp-and-verify-link@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AuthBoundary_otp-and-verify-link"
+
+--AuthBoundary_otp-and-verify-link
+Content-Type: text/plain; charset="UTF-8"
+
+Verification code: 551029
+Or confirm: https://shop.example/verify/email?token=zz
+
+--AuthBoundary_otp-and-verify-link
+Content-Type: text/html; charset="UTF-8"
+
+<html><body>
+<p>Your verification code is <b>551029</b></p>
+<p><a href="https://shop.example/verify/email?token=zz">Verify email</a></p>
+<p><a href="https://shop.example/privacy">Privacy</a></p>
+</body></html>
+
+--AuthBoundary_otp-and-verify-link--

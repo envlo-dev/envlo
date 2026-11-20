@@ -1,0 +1,22 @@
+From: Notes <hello@notes.example>
+To: user@example.com
+Subject: Your magic link
+Message-ID: <magic-link-only@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AuthBoundary_magic-link-only"
+
+--AuthBoundary_magic-link-only
+Content-Type: text/plain; charset="UTF-8"
+
+Click to sign in: https://notes.example/magic?token=abc123
+
+--AuthBoundary_magic-link-only
+Content-Type: text/html; charset="UTF-8"
+
+<html><body><p>Sign in instantly:</p>
+<a href="https://notes.example/magic?token=abc123">Log in with magic link</a>
+<a href="https://notes.example/unsubscribe">Unsubscribe</a>
+</body></html>
+
+--AuthBoundary_magic-link-only--
