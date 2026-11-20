@@ -1,0 +1,9 @@
+From: Bank <secure@bank.example>
+To: user@example.com
+Subject: Login code
+Message-ID: <otp-4digit-login@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Enter this login code: 7391 to continue.

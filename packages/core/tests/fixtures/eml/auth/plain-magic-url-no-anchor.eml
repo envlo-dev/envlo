@@ -1,0 +1,12 @@
+From: CLI <auth@cli.example>
+To: user@example.com
+Subject: Complete sign-in
+Message-ID: <plain-magic-url-no-anchor@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Open this auth URL to continue:
+https://cli.example/auth/callback?code=pkce_1
+
+If you did not request this, ignore.

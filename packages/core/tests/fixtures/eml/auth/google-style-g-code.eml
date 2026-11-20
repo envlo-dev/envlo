@@ -1,0 +1,19 @@
+From: Google <no-reply@accounts.google.com>
+To: user@example.com
+Subject: G-204918 is your Google verification code
+Message-ID: <google-style-g-code@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AuthBoundary_google-style-g-code"
+
+--AuthBoundary_google-style-g-code
+Content-Type: text/plain; charset="UTF-8"
+
+G-204918 is your Google verification code.
+
+--AuthBoundary_google-style-g-code
+Content-Type: text/html; charset="UTF-8"
+
+<html><body><div>G-204918 is your Google verification code.</div></body></html>
+
+--AuthBoundary_google-style-g-code--

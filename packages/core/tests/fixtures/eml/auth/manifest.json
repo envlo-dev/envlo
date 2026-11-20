@@ -1,0 +1,224 @@
+[
+  {
+    "file": "otp-6digit-verify.eml",
+    "otp": "482913",
+    "url": null,
+    "id": "otp-6digit-verify"
+  },
+  {
+    "file": "otp-4digit-login.eml",
+    "otp": "7391",
+    "url": null,
+    "id": "otp-4digit-login"
+  },
+  {
+    "file": "otp-8digit-2fa.eml",
+    "otp": "19283746",
+    "url": null,
+    "id": "otp-8digit-2fa"
+  },
+  {
+    "file": "magic-link-only.eml",
+    "otp": null,
+    "url": "https://notes.example/magic?token=abc123",
+    "id": "magic-link-only"
+  },
+  {
+    "file": "otp-and-verify-link.eml",
+    "otp": "551029",
+    "url": "https://shop.example/verify/email?token=zz",
+    "id": "otp-and-verify-link"
+  },
+  {
+    "file": "signup-confirm-button.eml",
+    "otp": null,
+    "url": "https://app.example/confirm?code=hello",
+    "id": "signup-confirm-button"
+  },
+  {
+    "file": "password-reset.eml",
+    "otp": null,
+    "url": "https://app.example/auth/reset?token=rst_99",
+    "id": "password-reset"
+  },
+  {
+    "file": "google-style-g-code.eml",
+    "otp": "204918",
+    "url": null,
+    "id": "google-style-g-code"
+  },
+  {
+    "file": "ignore-year-zip-color.eml",
+    "otp": null,
+    "url": null,
+    "id": "ignore-year-zip-color"
+  },
+  {
+    "file": "otp-with-noise-numbers.eml",
+    "otp": "883421",
+    "url": null,
+    "id": "otp-with-noise-numbers"
+  },
+  {
+    "file": "auth0-verify.eml",
+    "otp": null,
+    "url": "https://myapp.auth0.com/verify_email?ticket=abc",
+    "id": "auth0-verify"
+  },
+  {
+    "file": "okta-otp.eml",
+    "otp": "440291",
+    "url": null,
+    "id": "okta-otp"
+  },
+  {
+    "file": "slack-signin-code.eml",
+    "otp": "318472",
+    "url": null,
+    "id": "slack-signin-code"
+  },
+  {
+    "file": "discord-login.eml",
+    "otp": "917364",
+    "url": null,
+    "id": "discord-login"
+  },
+  {
+    "file": "github-device-code.eml",
+    "otp": "72645108",
+    "url": "https://github.com/login/device",
+    "id": "github-device-code"
+  },
+  {
+    "file": "activate-workspace.eml",
+    "otp": null,
+    "url": "https://app.contoso.example/activate?token=ws1",
+    "id": "activate-workspace"
+  },
+  {
+    "file": "stripe-2fa.eml",
+    "otp": "229184",
+    "url": null,
+    "id": "stripe-2fa"
+  },
+  {
+    "file": "microsoft-security-code.eml",
+    "otp": "583920",
+    "url": null,
+    "id": "microsoft-security-code"
+  },
+  {
+    "file": "apple-id-code.eml",
+    "otp": "104938",
+    "url": null,
+    "id": "apple-id-code"
+  },
+  {
+    "file": "de-bestätigungscode.eml",
+    "otp": "672901",
+    "url": null,
+    "id": "de-bestätigungscode"
+  },
+  {
+    "file": "fr-code-verification.eml",
+    "otp": "339120",
+    "url": null,
+    "id": "fr-code-verification"
+  },
+  {
+    "file": "plain-magic-url-no-anchor.eml",
+    "otp": null,
+    "url": "https://cli.example/auth/callback?code=pkce_1",
+    "id": "plain-magic-url-no-anchor"
+  },
+  {
+    "file": "order-email-no-auth.eml",
+    "otp": null,
+    "url": null,
+    "id": "order-email-no-auth"
+  },
+  {
+    "file": "html-big-otp-button-link.eml",
+    "otp": "248137",
+    "url": "https://linear.app/login?code=248137",
+    "id": "html-big-otp-button-link"
+  },
+  {
+    "file": "otp-spaced-digits.eml",
+    "otp": "482913",
+    "url": null,
+    "id": "otp-spaced-digits"
+  },
+  {
+    "file": "otp-hyphen-groups.eml",
+    "otp": "318472",
+    "url": null,
+    "id": "otp-hyphen-groups"
+  },
+  {
+    "file": "otp-12digit-bank.eml",
+    "otp": "918273645012",
+    "url": null,
+    "id": "otp-12digit-bank"
+  },
+  {
+    "file": "otp-alphanumeric.eml",
+    "otp": "AB12CD",
+    "url": null,
+    "id": "otp-alphanumeric"
+  },
+  {
+    "file": "otp-device-code.eml",
+    "otp": "WDJB-MJHT",
+    "url": "https://github.com/login/device",
+    "id": "otp-device-code"
+  },
+  {
+    "file": "locale-es-codigo.eml",
+    "otp": "441122",
+    "url": null,
+    "id": "locale-es-codigo"
+  },
+  {
+    "file": "locale-pt-codigo.eml",
+    "otp": "556677",
+    "url": null,
+    "id": "locale-pt-codigo"
+  },
+  {
+    "file": "locale-it-codice.eml",
+    "otp": "778899",
+    "url": null,
+    "id": "locale-it-codice"
+  },
+  {
+    "file": "locale-nl-verificatie.eml",
+    "otp": "112233",
+    "url": null,
+    "id": "locale-nl-verificatie"
+  },
+  {
+    "file": "locale-ja-auth-code.eml",
+    "otp": "847291",
+    "url": null,
+    "id": "locale-ja-auth-code"
+  },
+  {
+    "file": "locale-ko-auth-code.eml",
+    "otp": "564738",
+    "url": null,
+    "id": "locale-ko-auth-code"
+  },
+  {
+    "file": "locale-zh-yanzhengma.eml",
+    "otp": "192837",
+    "url": null,
+    "id": "locale-zh-yanzhengma"
+  },
+  {
+    "file": "locale-ru-kod.eml",
+    "otp": "998877",
+    "url": null,
+    "id": "locale-ru-kod"
+  }
+]

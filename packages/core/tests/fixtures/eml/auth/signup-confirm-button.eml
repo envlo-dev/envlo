@@ -1,0 +1,23 @@
+From: App <welcome@app.example>
+To: user@example.com
+Subject: Confirm your signup
+Message-ID: <signup-confirm-button@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AuthBoundary_signup-confirm-button"
+
+--AuthBoundary_signup-confirm-button
+Content-Type: text/plain; charset="UTF-8"
+
+Confirm your account: https://app.example/confirm?code=hello
+
+--AuthBoundary_signup-confirm-button
+Content-Type: text/html; charset="UTF-8"
+
+<html><body>
+<a href="https://app.example/confirm?code=hello" style="background:#0b6bcb;color:#fff">Confirm email</a>
+<a href="https://facebook.com/app">Facebook</a>
+<a href="https://app.example/preferences">Email preferences</a>
+</body></html>
+
+--AuthBoundary_signup-confirm-button--

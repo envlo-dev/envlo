@@ -1,0 +1,24 @@
+From: Shop <orders@shop.example>
+To: user@example.com
+Subject: Thanks for shopping
+Message-ID: <ignore-year-zip-color@auth.example>
+Date: Fri, 20 Nov 2026 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="AuthBoundary_ignore-year-zip-color"
+
+--AuthBoundary_ignore-year-zip-color
+Content-Type: text/plain; charset="UTF-8"
+
+Order placed in 2026. Ship to Austin, TX 78701. Brand color #FF5500.
+
+--AuthBoundary_ignore-year-zip-color
+Content-Type: text/html; charset="UTF-8"
+
+<html><body>
+<p>Order placed in 2026.</p>
+<p>Ship to Austin, TX 78701.</p>
+<p style="color:#FF5500">Thanks</p>
+<a href="https://shop.example/unsubscribe">Unsubscribe</a>
+</body></html>
+
+--AuthBoundary_ignore-year-zip-color--

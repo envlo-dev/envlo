@@ -129,3 +129,20 @@ export type {
   StripQuotesResult,
   AgentMarkdownResult,
 } from "./markdown/index.js";
+
+export {
+  extractAuthSignals,
+  extractOtpCandidates,
+  pickBestOtp,
+  normalizeAuthCode,
+  extractVerificationLinkCandidates,
+  pickBestVerificationUrl,
+} from "./extract/index.js";
+
+export type {
+  ExtractAuthInput,
+  ExtractAuthOptions,
+  ExtractAuthResult,
+  OtpCandidate,
+  VerificationLinkCandidate,
+} from "./extract/index.js";
