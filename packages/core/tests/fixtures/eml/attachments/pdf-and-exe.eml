@@ -1,0 +1,26 @@
+From: sender@example.com
+To: agent@example.com
+Subject: Attachments mix
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="AttBound"
+
+--AttBound
+Content-Type: text/plain; charset=UTF-8
+
+See attached invoice and the other file.
+
+--AttBound
+Content-Type: application/pdf; name="invoice.pdf"
+Content-Disposition: attachment; filename="invoice.pdf"
+Content-Transfer-Encoding: base64
+
+JVBERi0xLjQgdGlueQ==
+
+--AttBound
+Content-Type: application/octet-stream; name="payload.exe"
+Content-Disposition: attachment; filename="payload.exe"
+Content-Transfer-Encoding: base64
+
+TVogZXhl
+
+--AttBound--

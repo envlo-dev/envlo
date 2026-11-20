@@ -146,3 +146,38 @@ export type {
   OtpCandidate,
   VerificationLinkCandidate,
 } from "./extract/index.js";
+
+export {
+  persistAttachment,
+  persistAttachments,
+  toAttachmentRef,
+  toAttachmentRefs,
+  resolveOutboundAttachment,
+  resolveOutboundAttachments,
+  resolveAttachmentsForReply,
+  resolveAttachmentsForSend,
+  resolveAttachmentsForForward,
+  LocalAttachmentStore,
+  MemoryAttachmentStore,
+  S3AttachmentStore,
+  evaluateAttachmentAllowlist,
+  defaultAttachmentsRoot,
+  policyForTier,
+  PRO_MAX_ATTACHMENT_BYTES,
+  SANDBOX_MAX_ATTACHMENT_BYTES,
+} from "./attachments/index.js";
+
+export type {
+  AttachmentTier,
+  AttachmentCacheStatus,
+  AttachmentRef,
+  OutboundAttachmentBytes,
+  AttachmentInput,
+  PersistAttachmentResult,
+  AttachmentStore,
+  PersistAttachmentsOptions,
+  OutboundAttachmentRef,
+  OutboundRedirectMode,
+  ResolveOutboundOptions,
+  S3CompatibleClient,
+} from "./attachments/index.js";

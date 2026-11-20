@@ -20,6 +20,26 @@ export type IngestRawMimeOptions = {
    * Set false to force-keep tables as structured content.
    */
   flattenLayoutTables?: boolean;
+  /**
+   * Persist attachments through the sandboxed cache pipeline
+   * (`@envlo/core/attachments`). Default false (inline buffers only) for
+   * portability; enable for agent inboxes that need `localFilePath` / S3 URLs.
+   */
+  persistAttachments?: boolean;
+  /** Size-tier policy when `persistAttachments` is true (default `pro` = 5MB). */
+  attachmentTier?: "sandbox" | "pro";
+  /** Override max attachment bytes when persisting. */
+  attachmentMaxBytes?: number;
+  /**
+   * Custom store (local disk / memory / S3). Defaults to
+   * `LocalAttachmentStore` under `~/.envlo/attachments`.
+   */
+  attachmentStore?: import("../attachments/types.js").AttachmentStore;
+  /**
+   * Keep raw `content` bytes on **stored** attachments after persistence.
+   * Default false (path/URL refs only). Rejected attachments never retain bytes.
+   */
+  includeAttachmentContent?: boolean;
 };
 
 /** Aggregated SPF/DKIM/DMARC verdict for spoofing detection. */
@@ -47,8 +67,21 @@ export type IngestedAttachment = {
   mimeType: string;
   disposition: "attachment" | "inline" | null;
   contentId?: string;
-  /** Decoded binary content (always `Uint8Array`, never Base64 text). */
+  /**
+   * Decoded binary content (always `Uint8Array`, never Base64 text).
+   * Empty when cache status is `metadata-only` / rejected, or when
+   * `includeContent: false` after persistence.
+   */
   content: Uint8Array;
+  /** Stable cache id when the attachment cache pipeline ran. */
+  attachmentId: string | null;
+  /** Absolute sandboxed path (`~/.envlo/attachments/<id>.ext`) when stored locally. */
+  localFilePath: string | null;
+  /** Remote object URL when using an S3-compatible store. */
+  remoteUrl: string | null;
+  sizeBytes: number;
+  cacheStatus: "stored" | "metadata-only" | "rejected" | "inline-buffer";
+  rejectReason: string | null;
 };
 
 /**
