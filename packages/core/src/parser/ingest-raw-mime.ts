@@ -9,7 +9,10 @@ import {
   plainTextToAgentMarkdown,
 } from "../markdown/html-to-agent-markdown.js";
 import { firstAddress, flattenAddresses } from "./addresses.js";
-import { normalizeAttachments } from "./attachments.js";
+import {
+  normalizeAndPersistAttachments,
+  normalizeAttachments,
+} from "./attachments.js";
 import { normalizeMessageId, parseReferencesHeader } from "./references.js";
 import { evaluateSenderAuth } from "./sender-auth.js";
 import type {
@@ -50,6 +53,10 @@ function buildHeaderMap(headers: Header[]): ReadonlyMap<string, string[]> {
  *
  * Prefer this over firewall `htmlToSafeMarkdown` for agent bodies — that helper
  * only sanitizes + Turndowns and does **not** flatten layout tables or strip quotes.
+ *
+ * When `persistAttachments: true`, binaries are written through
+ * `@envlo/core/attachments` (allowlist + tier caps → `~/.envlo/attachments` or S3)
+ * so agents get `localFilePath` / `remoteUrl` instead of Base64 in context.
  */
 export async function ingestRawMime(
   input: RawMimeInput,
@@ -59,6 +66,7 @@ export async function ingestRawMime(
   const includeSignatures = options.includeSignatures ?? false;
   const sanitize = options.sanitize ?? true;
   const flattenLayoutTables = options.flattenLayoutTables ?? true;
+  const persistAttachmentsFlag = options.persistAttachments ?? false;
 
   const email = await PostalMime.parse(input, {
     attachmentEncoding: "arraybuffer",
@@ -94,6 +102,19 @@ export async function ingestRawMime(
     subject: email.subject ?? null,
   });
 
+  const attachments = persistAttachmentsFlag
+    ? await normalizeAndPersistAttachments(email.attachments, {
+        tier: options.attachmentTier ?? "pro",
+        ...(options.attachmentMaxBytes !== undefined
+          ? { maxBytes: options.attachmentMaxBytes }
+          : {}),
+        ...(options.attachmentStore !== undefined
+          ? { store: options.attachmentStore }
+          : {}),
+        includeContent: options.includeAttachmentContent ?? false,
+      })
+    : normalizeAttachments(email.attachments);
+
   const base: IngestedMime = {
     messageId: normalizeMessageId(email.messageId ?? headerMap.get("message-id")?.[0]),
     inReplyTo: normalizeMessageId(email.inReplyTo ?? headerMap.get("in-reply-to")?.[0]),
@@ -119,7 +140,7 @@ export async function ingestRawMime(
     spotlightedText: null,
     extractedOtp: authSignals.extractedOtp,
     verificationUrl: authSignals.verificationUrl,
-    attachments: normalizeAttachments(email.attachments),
+    attachments,
     senderAuthStatus: senderAuth.status,
     senderAuth,
     trueOriginalSender: null,

@@ -8,6 +8,7 @@ export default defineConfig({
     "firewall/index": "src/firewall/index.ts",
     "markdown/index": "src/markdown/index.ts",
     "extract/index": "src/extract/index.ts",
+    "attachments/index": "src/attachments/index.ts",
   },
 
   format: ["esm", "cjs"],

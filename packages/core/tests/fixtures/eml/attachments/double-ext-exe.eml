@@ -1,0 +1,19 @@
+From: sender@example.com
+To: agent@example.com
+Subject: Spoofed attachment
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="Spoof"
+
+--Spoof
+Content-Type: text/plain; charset=UTF-8
+
+Looks like a PDF.
+
+--Spoof
+Content-Type: application/pdf; name="invoice.pdf.exe"
+Content-Disposition: attachment; filename="invoice.pdf.exe"
+Content-Transfer-Encoding: base64
+
+TVogZXhl
+
+--Spoof--

@@ -1,0 +1,33 @@
+From: ops@example.com
+To: agent@example.com
+Subject: Report pack
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="Pack"
+
+--Pack
+Content-Type: text/plain; charset=UTF-8
+
+Reports attached.
+
+--Pack
+Content-Type: image/png; name="chart.png"
+Content-Disposition: attachment; filename="chart.png"
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgo=
+
+--Pack
+Content-Type: text/csv; name="rows.csv"
+Content-Disposition: attachment; filename="rows.csv"
+Content-Transfer-Encoding: base64
+
+YSxiLGMKMSwyLDMK
+
+--Pack
+Content-Type: text/plain; name="notes.txt"
+Content-Disposition: attachment; filename="notes.txt"
+Content-Transfer-Encoding: base64
+
+aGVsbG8gd29ybGQ=
+
+--Pack--

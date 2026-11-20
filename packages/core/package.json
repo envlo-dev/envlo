@@ -67,6 +67,16 @@
         "types": "./dist/extract/index.d.cts",
         "default": "./dist/extract/index.cjs"
       }
+    },
+    "./attachments": {
+      "import": {
+        "types": "./dist/attachments/index.d.ts",
+        "default": "./dist/attachments/index.js"
+      },
+      "require": {
+        "types": "./dist/attachments/index.d.cts",
+        "default": "./dist/attachments/index.cjs"
+      }
     }
   },
 
