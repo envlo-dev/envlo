@@ -10,6 +10,7 @@ export default defineConfig({
     "extract/index": "src/extract/index.ts",
     "attachments/index": "src/attachments/index.ts",
     "state/index": "src/state/index.ts",
+    "policy/index": "src/policy/index.ts",
   },
 
   format: ["esm", "cjs"],

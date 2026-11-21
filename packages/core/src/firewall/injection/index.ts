@@ -32,7 +32,7 @@ export {
   assertToolAllowedForRisk,
   ToolPolicyDeniedError,
 } from "./policy.js";
-export type { SideEffectToolName } from "./policy.js";
+export type { SideEffectToolName, ToolRiskPolicyOptions } from "./policy.js";
 export { buildAgentPromptParts } from "./prompt.js";
 export type { AgentPromptParts } from "./prompt.js";
 

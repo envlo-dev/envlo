@@ -87,6 +87,16 @@
         "types": "./dist/state/index.d.cts",
         "default": "./dist/state/index.cjs"
       }
+    },
+    "./policy": {
+      "import": {
+        "types": "./dist/policy/index.d.ts",
+        "default": "./dist/policy/index.js"
+      },
+      "require": {
+        "types": "./dist/policy/index.d.cts",
+        "default": "./dist/policy/index.cjs"
+      }
     }
   },
 
