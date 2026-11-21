@@ -181,3 +181,34 @@ export type {
   ResolveOutboundOptions,
   S3CompatibleClient,
 } from "./attachments/index.js";
+
+export {
+  openStateStore,
+  openSqliteStateStore,
+  MemoryStateStore,
+  SqliteStateStore,
+  stitchReplyHeadersFromParent,
+  DraftTransitionError,
+  defaultStateDbPath,
+  ACTIVE_DRAFT_STATUSES,
+  isNodeSqliteAvailable,
+} from "./state/index.js";
+
+export type {
+  DraftStatus,
+  MessageDirection,
+  InboxRecord,
+  ThreadRecord,
+  MessageRecord,
+  DraftRecord,
+  ThreadView,
+  StitchedReplyHeaders,
+  EnvloStateStore,
+  CreateInboxInput,
+  IngestMessageInput,
+  CreateDraftInput,
+  UpdateDraftInput,
+  MarkDraftSentInput,
+  OpenSqliteStateOptions,
+  OpenStateStoreOptions,
+} from "./state/index.js";

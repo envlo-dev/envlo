@@ -77,6 +77,16 @@
         "types": "./dist/attachments/index.d.cts",
         "default": "./dist/attachments/index.cjs"
       }
+    },
+    "./state": {
+      "import": {
+        "types": "./dist/state/index.d.ts",
+        "default": "./dist/state/index.js"
+      },
+      "require": {
+        "types": "./dist/state/index.d.cts",
+        "default": "./dist/state/index.cjs"
+      }
     }
   },
 
