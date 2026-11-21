@@ -391,6 +391,46 @@ export class SqliteStateStore implements EnvloStateStore {
     return (await this.getDraft(draftId))!;
   }
 
+  async editAndApproveDraft(
+    draftId: string,
+    input: UpdateDraftInput,
+  ): Promise<DraftRecord> {
+    const draft = await this.requireDraft(draftId);
+    assertDraftTransition(draft, "APPROVED");
+    const markdown =
+      input.markdown !== undefined ? input.markdown : draft.currentMarkdown;
+    if (!markdown.trim()) throw new Error("draft markdown is required");
+    const toAddresses = input.toAddresses ?? draft.toAddresses;
+    const subject = input.subject !== undefined ? input.subject : draft.subject;
+    const now = nowIso();
+    this.prepare(
+      `UPDATE drafts
+       SET current_markdown = ?, to_addresses_json = ?, subject = ?,
+           status = 'APPROVED', decided_at = ?, updated_at = ?
+       WHERE id = ?`,
+    ).run(markdown, JSON.stringify(toAddresses), subject, now, now, draftId);
+    return (await this.getDraft(draftId))!;
+  }
+
+  async annotateDraft(draftId: string, note: string): Promise<DraftRecord> {
+    const draft = await this.requireDraft(draftId);
+    if (draft.status !== "PENDING_APPROVAL" && draft.status !== "APPROVED") {
+      throw new Error(
+        `annotateDraft requires PENDING_APPROVAL or APPROVED (got ${draft.status})`,
+      );
+    }
+    const trimmed = note.trim();
+    if (!trimmed) throw new Error("annotateDraft requires a non-empty note");
+    const next = draft.humanFeedback
+      ? `${draft.humanFeedback}\n---\n${trimmed}`
+      : trimmed;
+    const now = nowIso();
+    this.prepare(
+      `UPDATE drafts SET human_feedback = ?, updated_at = ? WHERE id = ?`,
+    ).run(next, now, draftId);
+    return (await this.getDraft(draftId))!;
+  }
+
   async rejectDraft(draftId: string, humanFeedback: string): Promise<DraftRecord> {
     const draft = await this.requireDraft(draftId);
     assertDraftTransition(draft, "REJECTED_WITH_FEEDBACK");

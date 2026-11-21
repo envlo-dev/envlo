@@ -170,6 +170,19 @@ export type EnvloStateStore = {
   updateDraft(draftId: string, input: UpdateDraftInput): Promise<DraftRecord>;
   submitDraftForApproval(draftId: string): Promise<DraftRecord>;
   approveDraft(draftId: string): Promise<DraftRecord>;
+  /**
+   * PENDING_APPROVAL → APPROVED with optional supervisor edits in one step
+   * (Slack / magic-link `[Edit & Approve]`). Does not require REJECTED first.
+   */
+  editAndApproveDraft(
+    draftId: string,
+    input: UpdateDraftInput,
+  ): Promise<DraftRecord>;
+  /**
+   * Attach a supervisor note without changing status.
+   * Allowed in PENDING_APPROVAL (and APPROVED before send).
+   */
+  annotateDraft(draftId: string, note: string): Promise<DraftRecord>;
   rejectDraft(draftId: string, humanFeedback: string): Promise<DraftRecord>;
   /**
    * APPROVED → SENT: persist `finalSentMarkdown`, insert outbound message,
