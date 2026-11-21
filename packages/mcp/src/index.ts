@@ -39,8 +39,10 @@ export {
 export { runStdioServer } from "./transports/stdio.js";
 export {
   startHttpServer,
+  buildInboundHealthStats,
   type HttpServerOptions,
   type EnvloHttpServer,
+  type InboundHealthStats,
 } from "./transports/http.js";
 export {
   createInboxArgs,
@@ -65,3 +67,25 @@ export {
   type MessageMeta,
 } from "./thread-meta.js";
 export { mcpLog } from "./log.js";
+export { parseArgs, type ParsedCliArgs } from "./cli-args.js";
+export {
+  ImapAdapter,
+  IMAP_PRESETS,
+  SmtpCatchAllServer,
+  startLocalInbound,
+  readLocalInboundConfig,
+  resolveInboxId,
+  normalizeMailboxAddress,
+  FileImapUidCursorStore,
+  MemoryImapUidCursorStore,
+  DEFAULT_MAX_MIME_BYTES,
+  MimeTooLargeError,
+  parseInboundWebhookPayload,
+  type ImapAdapterOptions,
+  type ImapFlowClient,
+  type ImapFetchMessage,
+  type ImapFirstRunMode,
+  type LocalInboundConfig,
+  type LocalInboundRuntime,
+  type SmtpCatchAllOptions,
+} from "./inbound/index.js";
