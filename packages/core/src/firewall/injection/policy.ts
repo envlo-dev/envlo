@@ -18,22 +18,42 @@ export function isSideEffectTool(toolName: string): boolean {
   return SIDE_EFFECT_SET.has(toolName);
 }
 
+export type ToolRiskPolicyOptions = {
+  /**
+   * Medium-risk behavior when side effects are not deferred to approval.
+   * Default true = block all side effects on medium (fail-closed).
+   * false = allow `reply_to_thread` only.
+   */
+  strictMedium?: boolean;
+  /**
+   * When true (recommended with `@envlo/core/policy`), high/medium risk
+   * **allow** side-effect tools so hosts can create `PENDING_APPROVAL` drafts
+   * instead of hard-denying. Policy then revokes AUTO_SEND.
+   *
+   * When false (legacy default), high/medium hard-deny side effects.
+   */
+  allowPendingApproval?: boolean;
+};
+
 /**
  * Tool policy for a given injection risk:
- * - high → block all side-effect tools (read-only)
- * - medium → block send/forward; allow reply only with caution (still blocked by default)
  * - low → allow
- *
- * Medium blocks the same side effects as high for fail-closed Phase-1 agents.
- * Callers that want softer medium behavior can pass `strictMedium: false`.
+ * - high / medium + `allowPendingApproval` → allow (host must run outbound policy)
+ * - high without that flag → block all side-effect tools
+ * - medium + strictMedium → block (unless allowPendingApproval)
+ * - medium + soft → allow reply_to_thread only
  */
 export function isToolAllowedForRisk(
   toolName: string,
   risk: InjectionRisk,
-  options: { strictMedium?: boolean } = {},
+  options: ToolRiskPolicyOptions = {},
 ): boolean {
   if (!isSideEffectTool(toolName)) return true;
   if (risk === "low") return true;
+
+  // Phase-1 policy path: escalate to human approval instead of hard deny.
+  if (options.allowPendingApproval) return true;
+
   if (risk === "high") return false;
   // medium
   const strictMedium = options.strictMedium ?? true;
@@ -45,7 +65,7 @@ export function isToolAllowedForRisk(
 export function filterToolsForRisk<T extends string>(
   toolNames: readonly T[],
   risk: InjectionRisk,
-  options?: { strictMedium?: boolean },
+  options?: ToolRiskPolicyOptions,
 ): T[] {
   return toolNames.filter((name) => isToolAllowedForRisk(name, risk, options));
 }
@@ -67,7 +87,7 @@ export class ToolPolicyDeniedError extends Error {
 export function assertToolAllowedForRisk(
   toolName: string,
   risk: InjectionRisk,
-  options?: { strictMedium?: boolean },
+  options?: ToolRiskPolicyOptions,
 ): void {
   if (!isToolAllowedForRisk(toolName, risk, options)) {
     throw new ToolPolicyDeniedError(toolName, risk);

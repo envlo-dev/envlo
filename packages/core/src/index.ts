@@ -212,3 +212,36 @@ export type {
   OpenSqliteStateOptions,
   OpenStateStoreOptions,
 } from "./state/index.js";
+
+export {
+  evaluateOutboundPolicy,
+  enforceOutboundPolicy,
+  autoSendApprovedDraft,
+  rememberOutboundMessageId,
+  resolveOutboundPolicyConfig,
+  OutboundIdempotencyGuard,
+  MemoryIdempotencyStore,
+  RunawayLoopBreaker,
+  LoopBreakerTrippedError,
+  OutboundPolicyEngine,
+  hashOutboundIdempotencyKey,
+  containsAmountOver,
+  hasExternalRecipient,
+  DEFAULT_APPROVAL_RULES,
+  DEFAULT_IDEMPOTENCY_TTL_MS,
+  DEFAULT_LOOP_WINDOW_MS,
+  DEFAULT_LOOP_MAX_OUTBOUND,
+} from "./policy/index.js";
+
+export type {
+  OutboundToolName,
+  ApprovalRuleId,
+  EscalateOnInjectionRisk,
+  OutboundDisposition,
+  OutboundPolicyConfig,
+  OutboundPolicyContext,
+  OutboundPolicyDecision,
+  IdempotencyHit,
+  LoopBreakerTrip,
+  EnforceOutboundResult,
+} from "./policy/index.js";

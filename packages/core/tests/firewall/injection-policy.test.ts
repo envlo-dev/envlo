@@ -47,6 +47,20 @@ describe("tool policy", () => {
   it("assertToolAllowedForRisk throws ToolPolicyDeniedError", () => {
     expect(() => assertToolAllowedForRisk("send_email", "high")).toThrow(ToolPolicyDeniedError);
   });
+
+  it("allowPendingApproval lets high/medium side effects through for policy escalation", () => {
+    for (const tool of SIDE_EFFECT_TOOL_NAMES) {
+      expect(
+        isToolAllowedForRisk(tool, "high", { allowPendingApproval: true }),
+      ).toBe(true);
+      expect(
+        isToolAllowedForRisk(tool, "medium", { allowPendingApproval: true }),
+      ).toBe(true);
+    }
+    expect(() =>
+      assertToolAllowedForRisk("send_email", "high", { allowPendingApproval: true }),
+    ).not.toThrow();
+  });
 });
 
 describe("buildAgentPromptParts", () => {
