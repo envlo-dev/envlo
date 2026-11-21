@@ -245,3 +245,43 @@ export type {
   LoopBreakerTrip,
   EnforceOutboundResult,
 } from "./policy/index.js";
+
+export {
+  ConsoleDryRunSender,
+  ResendSender,
+  SesSender,
+  SmtpSender,
+  deliverApprovedDraft,
+  draftToOutboundMail,
+  DraftLifecycleBus,
+  defaultDraftLifecycleBus,
+  ApprovalController,
+  InteractiveCliApprovalChannel,
+  promptDraftApproval,
+  WebhookApprovalChannel,
+  handleWebhookApprovalRequest,
+  SlackApprovalChannel,
+  buildSlackApprovalBlocks,
+  interpretSlackInteraction,
+  handleSlackApprovalDecision,
+  MagicLinkApprovalChannel,
+  renderMagicLinkFormPage,
+  handleMagicLinkHttpRequest,
+  parseApprovalReply,
+  waitForDraftDecision,
+  MemoryApprovalTokenStore,
+  FileApprovalTokenStore,
+  extractApprovalToken,
+} from "./adapters/index.js";
+
+export type {
+  OutboundSender,
+  OutboundMail,
+  OutboundSendResult,
+  ApprovalChannel,
+  ApprovalAction,
+  DraftLifecycleEvent,
+  SesCompatibleClient,
+  SmtpTransport,
+  FetchLike,
+} from "./adapters/index.js";

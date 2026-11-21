@@ -139,6 +139,31 @@ describe("draft approval state machine", () => {
     ).rejects.toThrow(DraftTransitionError);
   });
 
+  it("editAndApproveDraft applies supervisor edits then APPROVED", async () => {
+    const store = new MemoryStateStore();
+    const inbox = await store.createInbox({ address: "agent@envlo.dev" });
+    const { thread } = await store.ingestMessage(inbox.id, {
+      messageId: "<r@x.com>",
+      bodyMarkdown: "hi",
+    });
+    const draftRec = await store.createDraft({
+      threadId: thread.id,
+      markdown: "Original reply",
+      toAddresses: ["customer@example.com"],
+    });
+    await store.submitDraftForApproval(draftRec.id);
+
+    const approved = await store.editAndApproveDraft(draftRec.id, {
+      markdown: "Edited by supervisor",
+      subject: "Re: Help",
+    });
+    expect(approved.status).toBe("APPROVED");
+    expect(approved.currentMarkdown).toBe("Edited by supervisor");
+    expect(approved.originalDraftMarkdown).toBe("Original reply");
+    expect(approved.subject).toBe("Re: Help");
+    expect(approved.decidedAt).toBeTruthy();
+  });
+
   it("rejects approve/reject/send from illegal store statuses", async () => {
     const store = new MemoryStateStore();
     const inbox = await store.createInbox({ address: "agent@envlo.dev" });

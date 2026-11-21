@@ -11,6 +11,7 @@ export default defineConfig({
     "attachments/index": "src/attachments/index.ts",
     "state/index": "src/state/index.ts",
     "policy/index": "src/policy/index.ts",
+    "adapters/index": "src/adapters/index.ts",
   },
 
   format: ["esm", "cjs"],

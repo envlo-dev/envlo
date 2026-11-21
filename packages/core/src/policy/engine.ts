@@ -1,3 +1,7 @@
+import type { ApprovalController } from "../adapters/approval-controller.js";
+import { deliverApprovedDraft } from "../adapters/deliver.js";
+import type { DraftLifecycleBus } from "../adapters/events.js";
+import type { OutboundMailAttachment, OutboundSender } from "../adapters/types.js";
 import {
   assertToolAllowedForRisk,
   type ToolRiskPolicyOptions,
@@ -38,6 +42,13 @@ export type OutboundPolicyEngineOptions = {
    * Created automatically when omitted.
    */
   idempotency?: OutboundIdempotencyGuard;
+  /** Optional BYO sender used by `sendApprovedDraft` when `from` is set. */
+  sender?: OutboundSender;
+  /** Default From address for transport sends. */
+  from?: string;
+  /** When set, `enforce` auto-notifies on REQUIRE_APPROVAL. */
+  approval?: ApprovalController;
+  events?: DraftLifecycleBus;
 };
 
 /**
@@ -50,6 +61,10 @@ export class OutboundPolicyEngine {
   readonly config: ResolvedOutboundPolicyConfig;
   readonly loopBreaker: RunawayLoopBreaker;
   readonly idempotency: OutboundIdempotencyGuard;
+  readonly sender: OutboundSender | undefined;
+  readonly from: string | undefined;
+  readonly approval: ApprovalController | undefined;
+  readonly events: DraftLifecycleBus | undefined;
 
   constructor(options: OutboundPolicyEngineOptions = {}) {
     this.config = resolveOutboundPolicyConfig(options.config);
@@ -58,6 +73,10 @@ export class OutboundPolicyEngine {
     this.idempotency =
       options.idempotency ??
       new OutboundIdempotencyGuard({ ttlMs: this.config.idempotency.ttlMs });
+    this.sender = options.sender;
+    this.from = options.from;
+    this.approval = options.approval;
+    this.events = options.events;
   }
 
   /** Pure decision (no store mutation). */
@@ -81,24 +100,39 @@ export class OutboundPolicyEngine {
     });
   }
 
-  /** Gate + create/submit draft using shared loop/idempotency stores. */
+  /**
+   * Gate + create/submit draft using shared loop/idempotency stores.
+   * When an `ApprovalController` is configured and disposition is
+   * REQUIRE_APPROVAL, fans out `notifyPending` automatically.
+   */
   async enforce(
     ctx: OutboundPolicyContext,
     state: EnvloStateStore,
   ): Promise<EnforceOutboundResult> {
     this.assertToolAllowed(ctx.tool, ctx.injectionRisk ?? "low");
-    return enforceOutboundPolicy(ctx, {
+    const result = await enforceOutboundPolicy(ctx, {
       state,
       config: optionsConfig(this.config),
       idempotency: this.idempotency,
       loopBreaker: this.loopBreaker,
-      // Count emails on successful send, not draft attempts.
       recordLoopOnAttempt: false,
     });
+
+    if (
+      this.approval &&
+      result.decision?.disposition === "REQUIRE_APPROVAL" &&
+      result.draft &&
+      !result.idempotentReplay
+    ) {
+      await this.approval.notifyPending(result.draft.id);
+    }
+
+    return result;
   }
 
   /**
-   * Mark draft sent and record the send against the loop breaker + idempotency.
+   * Send an approved draft. When `sender` (+ `from`) is available, transport
+   * via `deliverApprovedDraft`; otherwise state-only `markDraftSent`.
    */
   async sendApprovedDraft(options: {
     state: EnvloStateStore;
@@ -106,7 +140,51 @@ export class OutboundPolicyEngine {
     ctx: OutboundPolicyContext;
     finalSentMarkdown?: string;
     messageId?: string;
+    sender?: OutboundSender;
+    from?: string;
+    html?: string;
+    attachments?: OutboundMailAttachment[];
   }): Promise<{ draft: DraftRecord; outboundMessageId: string }> {
+    const sender = options.sender ?? this.sender;
+    const from = options.from ?? this.from;
+
+    if (sender && from) {
+      const delivered = await deliverApprovedDraft({
+        state: options.state,
+        sender,
+        draftId: options.draftId,
+        from,
+        ...(options.finalSentMarkdown !== undefined
+          ? { text: options.finalSentMarkdown }
+          : {}),
+        ...(options.html !== undefined ? { html: options.html } : {}),
+        ...(options.attachments !== undefined
+          ? { attachments: options.attachments }
+          : {}),
+        ...(this.events ? { events: this.events } : {}),
+      });
+
+      rememberOutboundMessageId(
+        this.idempotency,
+        options.ctx,
+        delivered.send.messageId,
+      );
+
+      const recipient = primaryRecipient(options.ctx.to);
+      if (recipient) {
+        this.loopBreaker.recordOutbound(
+          options.ctx.inboxId,
+          recipient,
+          options.ctx.nowMs ?? Date.now(),
+        );
+      }
+
+      return {
+        draft: delivered.draft,
+        outboundMessageId: delivered.send.messageId,
+      };
+    }
+
     const sent = await autoSendApprovedDraft({
       state: options.state,
       draftId: options.draftId,
@@ -120,13 +198,11 @@ export class OutboundPolicyEngine {
 
     const recipient = primaryRecipient(options.ctx.to);
     if (recipient) {
-      const trip = this.loopBreaker.recordOutbound(
+      this.loopBreaker.recordOutbound(
         options.ctx.inboxId,
         recipient,
         options.ctx.nowMs ?? Date.now(),
       );
-      // Pause is recorded; next enforce will throw if still paused.
-      void trip;
     }
 
     return sent;

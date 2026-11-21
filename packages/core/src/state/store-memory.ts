@@ -263,6 +263,42 @@ export class MemoryStateStore implements EnvloStateStore {
     return cloneDraft(draft);
   }
 
+  async editAndApproveDraft(
+    draftId: string,
+    input: UpdateDraftInput,
+  ): Promise<DraftRecord> {
+    const draft = await this.requireDraft(draftId);
+    assertDraftTransition(draft, "APPROVED");
+    if (input.markdown !== undefined) {
+      if (!input.markdown.trim()) throw new Error("draft markdown is required");
+      draft.currentMarkdown = input.markdown;
+    }
+    if (input.toAddresses !== undefined) draft.toAddresses = [...input.toAddresses];
+    if (input.subject !== undefined) draft.subject = input.subject;
+    draft.status = "APPROVED";
+    draft.decidedAt = nowIso();
+    draft.updatedAt = draft.decidedAt;
+    this.drafts.set(draft.id, draft);
+    return cloneDraft(draft);
+  }
+
+  async annotateDraft(draftId: string, note: string): Promise<DraftRecord> {
+    const draft = await this.requireDraft(draftId);
+    if (draft.status !== "PENDING_APPROVAL" && draft.status !== "APPROVED") {
+      throw new Error(
+        `annotateDraft requires PENDING_APPROVAL or APPROVED (got ${draft.status})`,
+      );
+    }
+    const trimmed = note.trim();
+    if (!trimmed) throw new Error("annotateDraft requires a non-empty note");
+    draft.humanFeedback = draft.humanFeedback
+      ? `${draft.humanFeedback}\n---\n${trimmed}`
+      : trimmed;
+    draft.updatedAt = nowIso();
+    this.drafts.set(draft.id, draft);
+    return cloneDraft(draft);
+  }
+
   async rejectDraft(draftId: string, humanFeedback: string): Promise<DraftRecord> {
     const draft = await this.requireDraft(draftId);
     assertDraftTransition(draft, "REJECTED_WITH_FEEDBACK");

@@ -97,6 +97,16 @@
         "types": "./dist/policy/index.d.cts",
         "default": "./dist/policy/index.cjs"
       }
+    },
+    "./adapters": {
+      "import": {
+        "types": "./dist/adapters/index.d.ts",
+        "default": "./dist/adapters/index.js"
+      },
+      "require": {
+        "types": "./dist/adapters/index.d.cts",
+        "default": "./dist/adapters/index.cjs"
+      }
     }
   },
 
