@@ -129,6 +129,153 @@ describe("@envlo/mcp http transport", () => {
     }
   });
 
+  it("unwraps SES SNS Notification and confirms subscriptions", async () => {
+    const ctx = await createEnvloMcpContext({
+      stateDriver: "memory",
+      sender: new ConsoleDryRunSender({ log: () => {} }),
+      bootstrapSenderFromEnv: false,
+    });
+    const inbox = await ctx.state.createInbox({ address: "ses@envlo.dev" });
+    const http = await startHttpServer({
+      context: ctx,
+      port: 0,
+      host: "127.0.0.1",
+    });
+
+    try {
+      const notify = await fetch(
+        `http://${http.host}:${http.port}/webhooks/inbound?inboxId=${inbox.id}`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            Type: "Notification",
+            Message: JSON.stringify({
+              content: [
+                "From: a@b.com",
+                "To: ses@envlo.dev",
+                "Subject: SES",
+                "Message-ID: <ses@b.com>",
+                "",
+                "via sns",
+              ].join("\r\n"),
+            }),
+          }),
+        },
+      );
+      expect(notify.status).toBe(200);
+      const body = (await notify.json()) as {
+        ok: boolean;
+        provider: string;
+      };
+      expect(body.ok).toBe(true);
+      expect(body.provider).toBe("ses_sns");
+
+      const confirm = await fetch(
+        `http://${http.host}:${http.port}/webhooks/inbound`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            Type: "SubscriptionConfirmation",
+            SubscribeURL: `http://${http.host}:${http.port}/health`,
+          }),
+        },
+      );
+      expect(confirm.status).toBe(200);
+      const confBody = (await confirm.json()) as {
+        sns: string;
+        confirmed: boolean;
+      };
+      expect(confBody.sns).toBe("subscription_confirmation");
+      expect(confBody.confirmed).toBe(true);
+    } finally {
+      await http.close();
+      await ctx.close();
+    }
+  });
+
+  it("rejects oversized webhook bodies with 413", async () => {
+    const ctx = await createEnvloMcpContext({
+      stateDriver: "memory",
+      sender: new ConsoleDryRunSender({ log: () => {} }),
+      bootstrapSenderFromEnv: false,
+    });
+    const inbox = await ctx.state.createInbox({ address: "big@envlo.dev" });
+    const http = await startHttpServer({
+      context: ctx,
+      port: 0,
+      host: "127.0.0.1",
+      maxMimeBytes: 64,
+    });
+    try {
+      const res = await fetch(
+        `http://${http.host}:${http.port}/webhooks/inbound?inboxId=${inbox.id}`,
+        {
+          method: "POST",
+          headers: { "content-type": "message/rfc822" },
+          body: "x".repeat(200),
+        },
+      );
+      expect(res.status).toBe(413);
+    } finally {
+      await http.close();
+      await ctx.close();
+    }
+  });
+
+  it("inbound webhook requires secret when configured and resolves by address", async () => {
+    const ctx = await createEnvloMcpContext({
+      stateDriver: "memory",
+      sender: new ConsoleDryRunSender({ log: () => {} }),
+      bootstrapSenderFromEnv: false,
+    });
+    const inbox = await ctx.state.createInbox({ address: "hook@envlo.dev" });
+    const http = await startHttpServer({
+      context: ctx,
+      port: 0,
+      host: "127.0.0.1",
+      webhookSecret: "s3cret",
+    });
+
+    try {
+      const unauthorized = await fetch(
+        `http://${http.host}:${http.port}/webhooks/inbound?address=hook@envlo.dev`,
+        {
+          method: "POST",
+          headers: { "content-type": "message/rfc822" },
+          body: "Subject: x\n\nbody",
+        },
+      );
+      expect(unauthorized.status).toBe(401);
+
+      const ok = await fetch(
+        `http://${http.host}:${http.port}/webhooks/inbound?address=hook@envlo.dev`,
+        {
+          method: "POST",
+          headers: {
+            "content-type": "message/rfc822",
+            "x-envlo-webhook-secret": "s3cret",
+          },
+          body: [
+            "From: a@b.com",
+            "To: hook@envlo.dev",
+            "Subject: Secured",
+            "Message-ID: <sec@b.com>",
+            "",
+            "ok",
+          ].join("\r\n"),
+        },
+      );
+      expect(ok.status).toBe(200);
+      const body = (await ok.json()) as { inboxId: string };
+      expect(body.inboxId).toBe(inbox.id);
+    } finally {
+      await http.close();
+      await ctx.close();
+    }
+  });
+
   it("inbound webhook validates inboxId and accepts JSON body", async () => {
     const ctx = await createEnvloMcpContext({
       stateDriver: "memory",

@@ -3,16 +3,23 @@
  * `npx @envlo/mcp` / `envlo-mcp` entrypoint.
  *
  * Default: stdio MCP transport (Cursor, Claude Code).
- * `--http [port]` : Streamable HTTP (Playwright / remote).
- * `--local` : stub for upcoming IMAP/SMTP inbound (#13).
- * `--help` : usage on stderr (stdout stays clean for JSON-RPC).
+ * `--http [port]` : Streamable HTTP (Playwright / remote / webhooks).
+ * `--local` : zero-tunnel inbound — SMTP :1025 + optional IMAP IDLE + HTTP webhook.
+ * `--smtp-port [n]` / `--no-smtp` / `--no-http` : local inbound toggles.
  */
 import { createMcpBanner } from "./banner.js";
+import { parseArgs } from "./cli-args.js";
 import { createEnvloMcpContext } from "./context.js";
 import { CURSOR_MCP_CONFIG_SNIPPET, readEnvloRuntimeConfig } from "./env.js";
-import { mcpLog } from "./log.js";
+import {
+  readLocalInboundConfig,
+  startLocalInbound,
+} from "./inbound/local-runtime.js";
 import { listCoreTools } from "./tools-meta.js";
-import { startHttpServer } from "./transports/http.js";
+import {
+  buildInboundHealthStats,
+  startHttpServer,
+} from "./transports/http.js";
 import { runStdioServer } from "./transports/stdio.js";
 
 function printHelp(): void {
@@ -20,23 +27,26 @@ function printHelp(): void {
     createMcpBanner(),
     "",
     "Usage:",
-    "  envlo-mcp                 Start MCP over stdio (default)",
-    "  envlo-mcp --http [port]   Streamable HTTP (default port 8787)",
-    "  envlo-mcp --local         Local inbound stub (IMAP/SMTP — see #13)",
-    "  envlo-mcp --help          Show this help",
+    "  envlo-mcp                      Start MCP over stdio (default)",
+    "  envlo-mcp --http [port]        Streamable HTTP (default port 8787)",
+    "  envlo-mcp --local              SMTP :1025 + IMAP IDLE + HTTP webhook",
+    "  envlo-mcp --local --smtp-port 1025",
+    "  envlo-mcp --local --no-http    Inbound without webhook listener",
+    "  envlo-mcp --help               Show this help",
     "",
-    "Env:",
-    "  ENVLO_STATE_PATH          SQLite state db path (default ~/.envlo/state.db)",
-    "  ENVLO_STATE=memory        Use in-memory state (tests)",
-    "  ENVLO_THREAD_META_PATH    Durable risk/OTP meta JSON",
-    "  ENVLO_HTTP_HOST           HTTP bind host (default 127.0.0.1)",
-    "  ENVLO_SENDER=console|resend  Outbound transport (default console)",
-    "  ENVLO_FROM                From override / local magic-link From",
-    "  RESEND_API_KEY            Required when ENVLO_SENDER=resend",
-    "  ENVLO_WEBHOOK_URL         Approval webhook channel",
-    "  ENVLO_SLACK_WEBHOOK       Slack incoming webhook channel",
-    "  ENVLO_APPROVAL_SUPERVISOR + ENVLO_APPROVAL_BASE_URL  Magic-link channel",
-    "  ENVLO_APPROVAL_MODE=local Require ENVLO_FROM for magic-link From",
+    "Inbound transports (Section 4.1 / ticket #13):",
+    "  1. IMAP IDLE pull  — ENVLO_IMAP_* (works behind NAT, no tunnel)",
+    "  2. Local SMTP      — 127.0.0.1:1025 catch-all for local/CI apps",
+    "  3. Webhook         — POST /webhooks/inbound (SES SNS / Resend / raw MIME)",
+    "",
+    "Env (inbound):",
+    "  ENVLO_IMAP_PRESET=gmail|outlook",
+    "  ENVLO_IMAP_HOST / PORT / USER / PASS | ACCESS_TOKEN (XOAUTH2)",
+    "  ENVLO_IMAP_FIRST_RUN=skip|unseen|all   (default skip — no mailbox flood)",
+    "  ENVLO_IMAP_TLS_REJECT_UNAUTHORIZED=0   (corporate MITM proxies)",
+    "  ENVLO_SMTP_PORT / ENVLO_SMTP_DISABLE=1 / ENVLO_LOCAL_HTTP=0",
+    "  ENVLO_MAX_MIME_BYTES           (default 26214400)",
+    "  ENVLO_DEFAULT_INBOX_ID / ENVLO_WEBHOOK_SECRET",
     "",
     "Cursor / Claude Code (mcp.json):",
     CURSOR_MCP_CONFIG_SNIPPET,
@@ -47,26 +57,6 @@ function printHelp(): void {
   process.stderr.write(`${lines.join("\n")}\n`);
 }
 
-function parseArgs(argv: string[]): {
-  help: boolean;
-  http: boolean;
-  local: boolean;
-  port: number;
-} {
-  const help = argv.includes("--help") || argv.includes("-h");
-  const local = argv.includes("--local");
-  const httpIdx = argv.findIndex((a) => a === "--http");
-  const http = httpIdx >= 0;
-  let port = 8787;
-  if (http && argv[httpIdx + 1] && !argv[httpIdx + 1]!.startsWith("-")) {
-    port = Number.parseInt(argv[httpIdx + 1]!, 10);
-    if (!Number.isFinite(port) || port <= 0) {
-      throw new Error(`Invalid --http port: ${argv[httpIdx + 1]}`);
-    }
-  }
-  return { help, http, local, port };
-}
-
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) {
@@ -74,16 +64,8 @@ async function main(): Promise<void> {
     return;
   }
 
-  if (args.local) {
-    mcpLog("warn", "cli.local_stub", {
-      message:
-        "--local enables the local-dev posture (BYO sender / magic-link mode).",
-      inbound:
-        "IMAP/SMTP inbound transports land in #13 — use /webhooks/inbound or ingestInboundMime until then.",
-    });
-    if (!process.env.ENVLO_APPROVAL_MODE) {
-      process.env.ENVLO_APPROVAL_MODE = "local";
-    }
+  if (args.local && !process.env.ENVLO_APPROVAL_MODE) {
+    process.env.ENVLO_APPROVAL_MODE = "local";
   }
 
   const runtime = readEnvloRuntimeConfig();
@@ -100,7 +82,79 @@ async function main(): Promise<void> {
     bootstrapApprovalChannelsFromEnv: true,
   });
 
+  let stopInbound: (() => Promise<void>) | null = null;
+  let inboundRuntime: Awaited<ReturnType<typeof startLocalInbound>> | null =
+    null;
+
+  if (args.local) {
+    const inboundConfig = readLocalInboundConfig(process.env, {
+      ...(args.smtpPort !== undefined ? { smtpPort: args.smtpPort } : {}),
+      ...(args.disableSmtp ? { disableSmtp: true } : {}),
+      ...(args.http ? { httpPort: args.httpPort } : {}),
+      ...(args.disableHttp ? { disableHttp: true } : {}),
+    });
+    // Explicit --http wins over ENVLO_LOCAL_HTTP=0.
+    if (args.http) {
+      inboundConfig.http = true;
+      inboundConfig.httpPort = args.httpPort;
+    }
+
+    inboundRuntime = await startLocalInbound(ctx, inboundConfig);
+    stopInbound = inboundRuntime.stop;
+    const smtpInfo = inboundRuntime.smtp?.address;
+    process.stderr.write(
+      `${createMcpBanner()}\n--local inbound ready` +
+        (smtpInfo
+          ? ` | SMTP ${smtpInfo.host}:${smtpInfo.port}`
+          : " | SMTP off") +
+        (inboundRuntime.imap ? " | IMAP IDLE on" : " | IMAP off") +
+        "\n",
+    );
+
+    if (inboundConfig.http) {
+      const httpServer = await startHttpServer({
+        context: ctx,
+        port: inboundConfig.httpPort,
+        host: runtime.httpHost,
+        ...(process.env.ENVLO_WEBHOOK_SECRET
+          ? { webhookSecret: process.env.ENVLO_WEBHOOK_SECRET }
+          : {}),
+        ...(process.env.ENVLO_DEFAULT_INBOX_ID
+          ? { defaultInboxId: process.env.ENVLO_DEFAULT_INBOX_ID }
+          : {}),
+        maxMimeBytes: inboundConfig.maxMimeBytes,
+        webhookAutoCreateInbox:
+          process.env.ENVLO_WEBHOOK_AUTO_CREATE_INBOX === "1" ||
+          process.env.ENVLO_WEBHOOK_AUTO_CREATE_INBOX === "true",
+        getInboundStats: () =>
+          buildInboundHealthStats({
+            smtp: inboundRuntime?.smtp ?? null,
+            imap: inboundRuntime?.imap ?? null,
+          }),
+      });
+      process.stderr.write(
+        `Webhook/MCP HTTP http://${httpServer.host}:${httpServer.port}/mcp\n` +
+          `POST http://${httpServer.host}:${httpServer.port}/webhooks/inbound\n`,
+      );
+
+      const shutdown = async () => {
+        if (stopInbound) await stopInbound();
+        await httpServer.close();
+        await ctx.close();
+      };
+      process.on("SIGINT", () => {
+        void shutdown().finally(() => process.exit(0));
+      });
+      process.on("SIGTERM", () => {
+        void shutdown().finally(() => process.exit(0));
+      });
+      // Keep alive for HTTP (+ inbound). Stdio not started alongside local HTTP.
+      return;
+    }
+  }
+
   const shutdown = async () => {
+    if (stopInbound) await stopInbound();
     await ctx.close();
   };
   process.on("SIGINT", () => {
@@ -110,21 +164,30 @@ async function main(): Promise<void> {
     void shutdown().finally(() => process.exit(0));
   });
 
-  if (args.http) {
+  if (args.http && !args.local) {
     const httpServer = await startHttpServer({
       context: ctx,
-      port: args.port,
+      port: args.httpPort,
       host: runtime.httpHost,
+      ...(process.env.ENVLO_WEBHOOK_SECRET
+        ? { webhookSecret: process.env.ENVLO_WEBHOOK_SECRET }
+        : {}),
+      ...(process.env.ENVLO_DEFAULT_INBOX_ID
+        ? { defaultInboxId: process.env.ENVLO_DEFAULT_INBOX_ID }
+        : {}),
+      webhookAutoCreateInbox:
+        process.env.ENVLO_WEBHOOK_AUTO_CREATE_INBOX === "1" ||
+        process.env.ENVLO_WEBHOOK_AUTO_CREATE_INBOX === "true",
     });
     process.stderr.write(
-      `${createMcpBanner()}\nStreamable HTTP listening on http://${httpServer.host}:${httpServer.port}/mcp\nSSE events: http://${httpServer.host}:${httpServer.port}/events\n`,
+      `${createMcpBanner()}\nStreamable HTTP listening on http://${httpServer.host}:${httpServer.port}/mcp\nSSE events: http://${httpServer.host}:${httpServer.port}/events\nWebhook: POST http://${httpServer.host}:${httpServer.port}/webhooks/inbound\n`,
     );
     return;
   }
 
-  // stdio: never write banner to stdout
   process.stderr.write(`${createMcpBanner()} (stdio)\n`);
   await runStdioServer(ctx);
+  await shutdown();
 }
 
 main().catch((err) => {

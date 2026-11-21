@@ -35,6 +35,29 @@ Run the MCP server without a local install:
 npx @envlo/mcp
 ```
 
+## Local inbound (Section 4.1)
+
+Zero-tunnel transports for laptops behind NAT — no ngrok required:
+
+```bash
+# SMTP catch-all on 127.0.0.1:1025 + HTTP webhook on :8787
+npx @envlo/mcp --local
+
+# Optional IMAP IDLE (Gmail App Password or M365 XOAUTH2)
+ENVLO_IMAP_PRESET=gmail \
+ENVLO_IMAP_USER=you@gmail.com \
+ENVLO_IMAP_PASS='app-password' \
+npx @envlo/mcp --local
+```
+
+| Transport | How |
+| --------- | --- |
+| IMAP IDLE | `ENVLO_IMAP_*` — outbound connect through NAT |
+| Local SMTP | `127.0.0.1:1025` (`--smtp-port`) for CI / local apps |
+| Webhook | `POST /webhooks/inbound` — raw MIME, SES SNS, or Resend JSON |
+
+First IMAP connect defaults to `ENVLO_IMAP_FIRST_RUN=skip` (seed cursor, no mailbox flood).
+
 ## Development
 
 This monorepo uses [pnpm](https://pnpm.io) workspaces (`pnpm@10+`) for local development and CI.
