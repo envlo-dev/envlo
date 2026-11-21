@@ -8,6 +8,11 @@ export default defineConfig({
   format: ["esm", "cjs"],
   dts: {
     entry: "src/index.ts",
+    // tsup's DTS worker chokes on composite project references.
+    compilerOptions: {
+      composite: false,
+      declarationMap: true,
+    },
   },
   sourcemap: true,
   clean: true,
@@ -16,3 +21,4 @@ export default defineConfig({
   target: "es2022",
   outDir: "dist",
 });
+
