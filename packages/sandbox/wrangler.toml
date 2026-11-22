@@ -1,0 +1,44 @@
+# Day-1 Ephemeral Sandbox Gateway (@sandbox.envlo.dev)
+# Deploy: pnpm --filter @envlo/sandbox exec wrangler deploy
+name = "envlo-sandbox"
+main = "src/index.ts"
+compatibility_date = "2025-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SANDBOX_DOMAIN = "sandbox.envlo.dev"
+UPGRADE_ORIGIN = "https://envlo.dev"
+# Stripe Payment Link URL for Concierge Pro ($19/mo) — override per env.
+STRIPE_PAYMENT_LINK_URL = "https://buy.stripe.com/test_replace_me"
+DEFAULT_KEY_REGION = "us"
+MAX_MIME_BYTES = "1048576"
+
+[[durable_objects.bindings]]
+name = "INBOX"
+class_name = "InboxDurableObject"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["InboxDurableObject"]
+
+# Replace with real KV namespace IDs before deploy:
+#   pnpm --filter @envlo/sandbox exec wrangler kv namespace create SANDBOX_KV
+[[kv_namespaces]]
+binding = "SANDBOX_KV"
+id = "00000000000000000000000000000000"
+preview_id = "00000000000000000000000000000001"
+
+# Custom domains / routes (uncomment after DNS + Email Routing are attached):
+# routes = [
+#   { pattern = "sandbox.envlo.dev/*", zone_name = "envlo.dev" },
+#   { pattern = "envlo.dev/upgrade", zone_name = "envlo.dev" },
+#   { pattern = "envlo.dev/webhooks/stripe", zone_name = "envlo.dev" },
+#   { pattern = "envlo.dev/v1/*", zone_name = "envlo.dev" },
+# ]
+
+# Secrets (wrangler secret put):
+#   STRIPE_WEBHOOK_SECRET
+#   RESEND_API_KEY
+#   RESEND_FROM
+#   API_KEY_PEPPER
+#   SESSION_SIGNING_SECRET
