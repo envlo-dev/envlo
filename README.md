@@ -8,6 +8,7 @@ Open-source agent email firewall and stateful MCP inbox engine.
 | ------- | ----------- |
 | [`@envlo/core`](./packages/core) | MIME firewall, DOM sanitizer, layout→Markdown flattener, and email state engine |
 | [`@envlo/mcp`](./packages/mcp) | MCP server exposing Envlo inbox tools over stdio and Streamable HTTP |
+| [`@envlo/sandbox`](./packages/sandbox) | Cloudflare Email Worker ephemeral sandbox (2h DO/KV ring buffer) + Concierge Pro Stripe webhook |
 
 ## Install
 
@@ -58,6 +59,22 @@ npx @envlo/mcp --local
 
 First IMAP connect defaults to `ENVLO_IMAP_FIRST_RUN=skip` (seed cursor, no mailbox flood).
 
+## Ephemeral sandbox (Section 2)
+
+Zero-login trial inboxes on `@sandbox.envlo.dev` (Cloudflare Email Worker):
+
+```bash
+# Local worker
+pnpm --filter @envlo/sandbox exec wrangler dev
+
+# Instant inbox (no account)
+curl -sX POST http://127.0.0.1:8787/v1/sandbox/inboxes -H 'content-type: application/json' -d '{}'
+```
+
+Free limits: **3** inboxes, **2h** TTL, **100** inbound emails/day. Mail is buffered in a Durable Object + KV ring (`expirationTtl: 7200`) and streamed over WebSocket so agents can call `wait_for_email` without races.
+
+Concierge Pro ($19/mo): [`envlo.dev/upgrade`](https://envlo.dev/upgrade) → Stripe Payment Link; webhook mints `envlo_live_us_…` / `envlo_live_eu_…` and emails the founder welcome note via Resend. Verify with `GET /v1/me`. MCP agents can stream the sandbox with `ENVLO_SANDBOX_URL`. See [`packages/sandbox`](./packages/sandbox).
+
 ## Development
 
 This monorepo uses [pnpm](https://pnpm.io) workspaces (`pnpm@10+`) for local development and CI.
@@ -70,4 +87,4 @@ pnpm test
 
 ## Licensing
 
-This monorepo — including [`@envlo/core`](./packages/core) and [`@envlo/mcp`](./packages/mcp) — is licensed under the **Apache License 2.0**. See the root [`LICENSE`](./LICENSE).
+This monorepo — including [`@envlo/core`](./packages/core), [`@envlo/mcp`](./packages/mcp), and [`@envlo/sandbox`](./packages/sandbox) — is licensed under the **Apache License 2.0**. See the root [`LICENSE`](./LICENSE).

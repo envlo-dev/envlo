@@ -1,0 +1,7 @@
+STRIPE_WEBHOOK_SECRET=whsec_test_replace_me
+RESEND_API_KEY=re_test_replace_me
+RESEND_FROM=Envlo <welcome@envlo.dev>
+API_KEY_PEPPER=dev-pepper-change-me
+SESSION_SIGNING_SECRET=dev-session-secret-change-me
+STRIPE_PAYMENT_LINK_URL=https://buy.stripe.com/test_replace_me
+MAX_MIME_BYTES=1048576

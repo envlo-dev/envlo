@@ -15,6 +15,11 @@ import {
   readLocalInboundConfig,
   startLocalInbound,
 } from "./inbound/local-runtime.js";
+import {
+  readSandboxBridgeConfig,
+  startSandboxBridge,
+  type SandboxBridgeHandle,
+} from "./inbound/sandbox-client.js";
 import { listCoreTools } from "./tools-meta.js";
 import {
   buildInboundHealthStats,
@@ -47,6 +52,8 @@ function printHelp(): void {
     "  ENVLO_SMTP_PORT / ENVLO_SMTP_DISABLE=1 / ENVLO_LOCAL_HTTP=0",
     "  ENVLO_MAX_MIME_BYTES           (default 26214400)",
     "  ENVLO_DEFAULT_INBOX_ID / ENVLO_WEBHOOK_SECRET",
+    "  ENVLO_SANDBOX_URL              Cloudflare sandbox gateway (ticket #14)",
+    "  ENVLO_SANDBOX_SESSION_TOKEN / ENVLO_SANDBOX_INBOX_ID  (optional reuse)",
     "",
     "Cursor / Claude Code (mcp.json):",
     CURSOR_MCP_CONFIG_SNIPPET,
@@ -85,6 +92,15 @@ async function main(): Promise<void> {
   let stopInbound: (() => Promise<void>) | null = null;
   let inboundRuntime: Awaited<ReturnType<typeof startLocalInbound>> | null =
     null;
+  let sandboxBridge: SandboxBridgeHandle | null = null;
+
+  const sandboxConfig = readSandboxBridgeConfig(process.env);
+  if (sandboxConfig) {
+    sandboxBridge = await startSandboxBridge(ctx, sandboxConfig);
+    process.stderr.write(
+      `Sandbox bridge → ${sandboxConfig.baseUrl} inbox ${sandboxBridge.address}\n`,
+    );
+  }
 
   if (args.local) {
     const inboundConfig = readLocalInboundConfig(process.env, {
@@ -138,6 +154,7 @@ async function main(): Promise<void> {
       );
 
       const shutdown = async () => {
+        if (sandboxBridge) await sandboxBridge.stop();
         if (stopInbound) await stopInbound();
         await httpServer.close();
         await ctx.close();
@@ -154,6 +171,7 @@ async function main(): Promise<void> {
   }
 
   const shutdown = async () => {
+    if (sandboxBridge) await sandboxBridge.stop();
     if (stopInbound) await stopInbound();
     await ctx.close();
   };

@@ -46,3 +46,9 @@ export {
   parseInboundWebhookPayload,
   type ParsedInboundWebhook,
 } from "./webhook-payload.js";
+export {
+  readSandboxBridgeConfig,
+  startSandboxBridge,
+  type SandboxBridgeConfig,
+  type SandboxBridgeHandle,
+} from "./sandbox-client.js";

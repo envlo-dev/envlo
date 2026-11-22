@@ -13,3 +13,6 @@ packages/*/tsconfig.tsbuildinfo
 .pnpm-store/
 package-lock.json
 yarn.lock
+.wrangler/
+.dev.vars
+!**/.dev.vars.example
